@@ -38,12 +38,18 @@ while not terminou:
               'antonio': 123456456, 'carlos': 91257581,
               'cesar':987458, 'rosemary': 789456125 }
     
-    tabulação = [('1','alexandre', '456123789'), ('2','anderson', '1245698456'),
-                ('3','antonio','123456456'), ('4','carlos', '91257581'),
-                ('5','cesar','987458'), ('6','rosemary','789456125') ]
-    headers = ["Nr." ,  " Usuário "   ,    "Espaço utilizado "  ,"  % do uso"]
-   
-    inserir_tabela = tabulate(tabulação, headers,tablefmt ="grid")
+    for i in dicionario:
+        print(i)
+        
+    
+        #if i > 0:
+            
+         #   headers_2 = [""]
+          #  inserir_tabela = tabulate(tabulacao_2, headers_2)
+        #else:
+         #   headers = ["Nr." ,  " Usuário "   ,    "Espaço utilizado "  ,"  % do uso"]
+          #  inserir_tabela = tabulate(tabulacao, headers)
+            
     
     valores_Bytes = dicionario.values()
 
@@ -77,7 +83,8 @@ while not terminou:
     tela.fill(branco)
     mostra_titulo()
     montar_tabela("ACME Inc.           Uso do espaço em disco pelos usuários",50)
-    mostrar_dados(inserir_tabela, 30+soma_indices*10)
+    montar_tabela("Nr.    Usuário        Espaço utilizado     % do uso", 100)
+    mostrar_dados(dicionario, 30+soma_indices*10)
    
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
