@@ -38,18 +38,6 @@ while not terminou:
               'antonio': 123456456, 'carlos': 91257581,
               'cesar':987458, 'rosemary': 789456125 }
     
-    for i in dicionario:
-        print(i)
-        
-    
-        #if i > 0:
-            
-         #   headers_2 = [""]
-          #  inserir_tabela = tabulate(tabulacao_2, headers_2)
-        #else:
-         #   headers = ["Nr." ,  " Usuário "   ,    "Espaço utilizado "  ,"  % do uso"]
-          #  inserir_tabela = tabulate(tabulacao, headers)
-            
     
     valores_Bytes = dicionario.values()
 
@@ -89,6 +77,10 @@ while not terminou:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             terminou = True
+        if event.type == pygame.MOUSEBUTTONDOWN and event.button ==1:
+            pos = pygame.mouse.get_pos()
+            if aba1.area.collidepoint(pos):
+                
     
     pygame.display.update()
     
