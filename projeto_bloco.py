@@ -1,4 +1,5 @@
 import pygame, random
+from tabulate import tabulate
 branco  = (255,255,255)
 preto = (0,0,0)
 pygame.mixer.init()
@@ -19,10 +20,16 @@ def mostra_titulo():
     textpos = text.get_rect(centerx=tela.get_width()/2)
     tela.blit(text,textpos)
     
-def mostrar_dados(texto,y):
+def mostrar_dados(texto,x,y):
     font = pygame.font.Font(None,20)
     text = font.render(texto, 1 ,preto)
-    textpos = text.get_rect(center =(tela.get_width()/4 ,y))
+    textpos = text.get_rect(center =(x ,y))
+    tela.blit(text,textpos)
+
+def montar_tabela(texto,y):
+    font = pygame.font.Font(None,20)
+    text = font.render(texto, 1 ,preto)
+    textpos = text.get_rect(center =(tela.get_width()/2 ,y))
     tela.blit(text,textpos)
 
 while not terminou:
@@ -47,7 +54,7 @@ while not terminou:
     print("------------------------------------------------------------------------")
     print("Nr.    Usuário        Espaço utilizado     % do uso")
     print("")
-    
+        
     for i in dicionario.keys():
         dicionario[i] = round(dicionario[i],2)
         porcentagem = round((dicionario[i]/soma)*100,2)
@@ -58,11 +65,16 @@ while not terminou:
     print("Total de memoria usada:", round(soma,2), "Mb")
     print("Media de memoria usada:", round(soma_media,2), "Mb")
     
+
+    
     tela.fill(branco)
     mostra_titulo()
-    mostrar_dados("ACME Inc.           Uso do espaço em disco pelos usuários",50)
-    mostrar_dados("alexandre, 456123789",30+soma_indices*10)
-    mostrar_dados("anderson 1245698456",50+soma_indices*10)
+    montar_tabela("ACME Inc.           Uso do espaço em disco pelos usuários",50)
+    mostrar_dados("alexandre            456123789", 197 , 30+soma_indices*10)
+    mostrar_dados("anderson             1245698456",200,50+soma_indices*10)
+    mostrar_dados("antonio              123456456",192,70+soma_indices*10)
+    mostrar_dados("carlos               91257581",183,90+soma_indices*10)
+    mostrar_dados("cesar                987458",175,110+soma_indices*10)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             terminou = True
