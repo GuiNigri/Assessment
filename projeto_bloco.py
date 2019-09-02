@@ -20,10 +20,10 @@ def mostra_titulo():
     textpos = text.get_rect(centerx=tela.get_width()/2)
     tela.blit(text,textpos)
     
-def mostrar_dados(texto,x,y):
+def mostrar_dados(texto,y):
     font = pygame.font.Font(None,20)
     text = font.render(texto, 1 ,preto)
-    textpos = text.get_rect(center =(x ,y))
+    textpos = text.get_rect(center =(tela.get_width()/4 ,y))
     tela.blit(text,textpos)
 
 def montar_tabela(texto,y):
@@ -37,7 +37,14 @@ while not terminou:
     dicionario = {'alexandre': 456123789, 'anderson': 1245698456,
               'antonio': 123456456, 'carlos': 91257581,
               'cesar':987458, 'rosemary': 789456125 }
-
+    
+    tabulação = [('1','alexandre', '456123789'), ('2','anderson', '1245698456'),
+                ('3','antonio','123456456'), ('4','carlos', '91257581'),
+                ('5','cesar','987458'), ('6','rosemary','789456125') ]
+    headers = ["Nr." ,  " Usuário "   ,    "Espaço utilizado "  ,"  % do uso"]
+   
+    inserir_tabela = tabulate(tabulação, headers,tablefmt ="grid")
+    
     valores_Bytes = dicionario.values()
 
     soma = sum(dicionario.values())
@@ -70,11 +77,8 @@ while not terminou:
     tela.fill(branco)
     mostra_titulo()
     montar_tabela("ACME Inc.           Uso do espaço em disco pelos usuários",50)
-    mostrar_dados("alexandre            456123789", 197 , 30+soma_indices*10)
-    mostrar_dados("anderson             1245698456",200,50+soma_indices*10)
-    mostrar_dados("antonio              123456456",192,70+soma_indices*10)
-    mostrar_dados("carlos               91257581",183,90+soma_indices*10)
-    mostrar_dados("cesar                987458",175,110+soma_indices*10)
+    mostrar_dados(inserir_tabela, 30+soma_indices*10)
+   
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             terminou = True
