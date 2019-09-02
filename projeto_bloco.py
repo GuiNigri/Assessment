@@ -52,10 +52,6 @@ def mostra_titulo_aba(texto,x):
     text = font.render(texto,1,branco)
     textpos = text.get_rect(center =(x,30))
     tela.blit(text, textpos)
-tela.fill(branco)   
-for i in range(0,4):
-    aba = Aba(i,cores)
-    aba.desenha(tela)
         
 while not terminou:
 
@@ -102,7 +98,8 @@ while not terminou:
         if event.type == pygame.MOUSEBUTTONDOWN and event.button ==1:
             pos = pygame.mouse.get_pos()
             if aba.area.collidepoint(pos):
-                terminou = True
+                tela.fill(branco)
+                aba0, aba1, aba2, aba3 = cria_abas()
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             terminou = True
