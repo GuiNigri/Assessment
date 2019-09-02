@@ -5,7 +5,7 @@ verde = (0,255,0)
 azul = (0,0,156)
 red = (255,0,0)
 darkBlue = (2 , 24 , 89)
-cores = [verde,azul,red,darkBlue]
+cores = [verde,azul,red,darkBlue,preto]
 
 pygame.mixer.init()
 
@@ -31,7 +31,7 @@ class Aba():
 
 def mostra_titulo(texto,x,y):
     font = pygame.font.Font(None,24)
-    text = font.render(texto,1,preto)
+    text = font.render(texto,1,branco)
     textpos = text.get_rect(center=(x,y) )
     tela.blit(text,textpos)
     
@@ -52,7 +52,18 @@ def mostra_titulo_aba(texto,x):
     text = font.render(texto,1,branco)
     textpos = text.get_rect(center =(x,30))
     tela.blit(text, textpos)
-        
+def cria_abas():
+    lista_de_abas = []
+    for i in range(0,4):
+        aba = Aba(i,cores)
+        aba.desenha(tela)
+        lista_de_abas.append(aba)
+        mostra_titulo_aba(f"ABA {i}", (largura_tela/4 *i)+100)
+    return lista_de_abas
+
+
+tela.fill(branco)
+aba1,aba2,aba3,aba4 =  cria_abas()
 while not terminou:
 
     dicionario = {'alexandre': 456123789, 'anderson': 1245698456,
@@ -87,8 +98,8 @@ while not terminou:
     print("Media de memoria usada:", round(soma_media,2), "Mb")
     
 
-
-    mostra_titulo("Aba 1",100,25)
+    
+   
     #montar_tabela("ACME Inc.           Uso do espaço em disco pelos usuários",50)
     #mostrar_dados("", 30+soma_indices*10)
     
@@ -103,9 +114,10 @@ while not terminou:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             terminou = True
-    
+
     pygame.display.update()
     
 pygame.display.quit()
      
+
 
