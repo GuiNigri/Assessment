@@ -115,6 +115,10 @@ while not terminou:
                 montar_tabela("------------------------------------------------------------------------",175)
                 mostrar_dados("1  alexandre, 456123789",150+soma_indices*10)
                 mostrar_dados("2  anderson 1245698456",170+soma_indices*10)
+                mostrar_dados("3  anderson 1245698456",190+soma_indices*10)
+                mostrar_dados("4  anderson 1245698456",210+soma_indices*10)
+                mostrar_dados("5  anderson 1245698456",230+soma_indices*10)
+                mostrar_dados("6  anderson 1245698456",250+soma_indices*10)
             if aba1.area.collidepoint(pos):
                 tela.fill(branco)
                 aba0, aba1, aba2, aba3 = cria_abas()
