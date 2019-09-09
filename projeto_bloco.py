@@ -61,6 +61,9 @@ def cria_abas():
         mostra_titulo_aba(f"ABA {i}", (largura_tela/4 *i)+100)
     return lista_de_abas
 
+clock = pygame.time.Clock()
+
+conta_clocks = 0
 
 tela.fill(branco)
 aba0,aba1,aba2,aba3 =  cria_abas()
@@ -70,7 +73,7 @@ while not terminou:
               'antonio': 123456456, 'carlos': 91257581,
               'cesar':987458, 'rosemary': 789456125 }
     
-    
+    conta_clocks = conta_clocks + 1
     
     lista_de_dicionario = [{'rss': 113979392, 'vms': 114520064, 'pid': 88, 'nome': 'Registry', 'percento': 379.85},
                            {'rss': 35794944, 'vms': 20525056, 'pid': 948, 'nome': 'chrome.exe', 'percento': 50.7},
@@ -163,6 +166,11 @@ while not terminou:
             if aba1.area.collidepoint(pos):
                 tela.fill(branco)
                 aba0, aba1, aba2, aba3 = cria_abas()
+                for i in range(conta_clocks):
+                    tela.fill(branco)
+                    mostra_titulo(str(conta_clocks),400,200)
+                    aba0, aba1, aba2, aba3 = cria_abas()
+
             if aba2.area.collidepoint(pos):
                 tela.fill(branco)
                 aba0, aba1, aba2, aba3 = cria_abas()
@@ -175,9 +183,11 @@ while not terminou:
             terminou = True
 
     pygame.display.update()
+    clock.tick(20)
     
 pygame.display.quit()
      
+
 
 
 
