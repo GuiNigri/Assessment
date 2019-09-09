@@ -162,7 +162,7 @@ while not terminou:
                 montar_tabela("5",200,250+soma_indices*10),montar_tabela("rosemary",300,250+soma_indices*10),montar_tabela("789456125",450,250+soma_indices*10)"""
                 
                 for item in lista_de_dicionario:
-                    montar_tabela(f'{item["pid"]:^20}       {item["nome"]:<20}          {item["vms"]+1:>13}         {item["rss"]:>13}',400,200+soma_indices*25)
+                    montar_tabela(f'{item["pid"]:^20}       {item["nome"]:<20}          {item["vms"]/1024/1024:>13} Mb        {item["rss"]/1024/1024:>13}Mb {item["percento"]:>10}',400,200+soma_indices*25)                    
                     soma_indices = soma_indices + 1
                 aba_setada = aba_setada_0
                     
