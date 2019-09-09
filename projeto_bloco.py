@@ -7,12 +7,13 @@ red = (255,0,0)
 darkBlue = (2 , 24 , 89)
 cores = [azul,red,darkBlue,preto]
 
+
 pygame.mixer.init()
 
 pygame.font.init()
 
 largura_tela = 800
-altura_tela = 1000
+altura_tela = 600
 
 tela = pygame.display.set_mode((largura_tela,altura_tela))
 
@@ -67,6 +68,7 @@ conta_clocks = 0
 
 tela.fill(branco)
 aba0,aba1,aba2,aba3 =  cria_abas()
+
 while not terminou:
 
     dicionario = {'alexandre': 456123789, 'anderson': 1245698456,
@@ -137,9 +139,8 @@ while not terminou:
     
 
     
-   
-    
     for event in pygame.event.get():
+        aba_setada = "null"
         if event.type == pygame.QUIT:
             terminou = True
         if event.type == pygame.MOUSEBUTTONDOWN and event.button ==1:
@@ -147,12 +148,12 @@ while not terminou:
             if aba0.area.collidepoint(pos):
                 tela.fill(branco)
                 aba0, aba1, aba2, aba3 = cria_abas()
-                mostra_titulo("ACME Inc.           Uso do espaço em disco pelos usuários",400,100)
-                montar_tabela("------------------------------------------------------------------------",400,115)
-                montar_tabela("pid",210,150)
-                montar_tabela("rms",300,150)
-                montar_tabela("vms",470,150)
-                montar_tabela("% do uso",550,150)
+                mostra_titulo("ACME Inc.           Uso do espaço em disco pelos usuários",400,150)
+                montar_tabela("------------------------------------------------------------------------",400,175)
+                montar_tabela("pid",210,200)
+                montar_tabela("rms",300,200)
+                montar_tabela("vms",470,200)
+                montar_tabela("% do uso",550,200)
                 """montar_tabela("1",200,150+soma_indices*10),montar_tabela("alexandre",300,150+soma_indices*10),montar_tabela("456123789",450,150+soma_indices*10)
                 montar_tabela("2",200,170+soma_indices*10),montar_tabela("anderson",300,170+soma_indices*10),montar_tabela("1245698456",450,170+soma_indices*10)
                 montar_tabela("3",200,190+soma_indices*10),montar_tabela("antonio",300,190+soma_indices*10),montar_tabela("123456456",450,190+soma_indices*10)
@@ -161,22 +162,42 @@ while not terminou:
                 montar_tabela("5",200,250+soma_indices*10),montar_tabela("rosemary",300,250+soma_indices*10),montar_tabela("789456125",450,250+soma_indices*10)"""
                 
                 for item in lista_de_dicionario:
-                    montar_tabela(f'{item["pid"]:^20}       {item["nome"]:<20}          {item["vms"]:>13}         {item["rss"]:>13}',400,200+soma_indices*25)
+                    montar_tabela(f'{item["pid"]:^20}       {item["nome"]:<20}          {item["vms"]+1:>13}         {item["rss"]:>13}',400,200+soma_indices*25)
                     soma_indices = soma_indices + 1
+                aba_setada = aba_setada_0
+                    
             if aba1.area.collidepoint(pos):
                 tela.fill(branco)
                 aba0, aba1, aba2, aba3 = cria_abas()
-                for i in range(conta_clocks):
-                    tela.fill(branco)
-                    mostra_titulo(str(conta_clocks),400,190)
-                    aba0, aba1, aba2, aba3 = cria_abas()
+                aba_setada = "aba_setada_1"
 
             if aba2.area.collidepoint(pos):
                 tela.fill(branco)
                 aba0, aba1, aba2, aba3 = cria_abas()
+                aba_setada = "aba_setada_2"
             if aba3.area.collidepoint(pos):
                 tela.fill(branco)
                 aba0, aba1, aba2, aba3 = cria_abas()
+                aba_setada = "aba_setada_3"
+                
+    if aba_setada == "aba_setada_1":
+        tela.fill(branco)
+        for i in range(conta_clocks):
+            tela.fill(branco)
+            mostra_titulo(str(conta_clocks),400,200)
+            aba0, aba1, aba2, aba3 = cria_abas()
+    if aba_setada == "aba_setada_2":
+        tela.fill(branco)
+        for i in range(conta_clocks):
+            tela.fill(branco)
+            mostra_titulo(str(conta_clocks),400,200)
+            aba0, aba1, aba2, aba3 = cria_abas()
+    if aba_setada == "aba_setada_3":
+        tela.fill(branco)
+        for i in range(conta_clocks):
+            tela.fill(branco)
+            mostra_titulo(str(conta_clocks),400,200)
+            aba0, aba1, aba2, aba3 = cria_abas()
                 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -187,6 +208,7 @@ while not terminou:
     
 pygame.display.quit()
      
+
 
 
 
