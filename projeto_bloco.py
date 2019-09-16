@@ -85,7 +85,7 @@ def conteudo_aba0():
 clock = pygame.time.Clock()
 
 conta_clocks = 0
-conta_segundos = 60
+conta_segundos = 0
 
 tela.fill(branco)
 aba0,aba1,aba2,aba3 =  cria_abas()
@@ -161,13 +161,16 @@ while True:
                 aba0, aba1, aba2, aba3 = cria_abas()
                 aba_setada = "aba_setada_3"
                 
-                
+    if conta_clocks == 50:
+        if contasegundos>=0:
+            conta_segundos+=1
+        conta_clocks = 0
+    aba0, aba1, aba2, aba3 = cria_abas()
+
     if aba_setada == "aba_setada_0":
         tela.fill(branco)
-        for b in range(conta_clocks):
-            tela.fill(branco)
-            mostra_clock()
-            conteudo_aba0()
+        mostra_clock()
+        conteudo_aba0()
         aba0, aba1, aba2, aba3 = cria_abas()
             
     if aba_setada == "aba_setada_1":
