@@ -27,7 +27,7 @@ class Aba():
         self.y = 0
         self.area = pygame.Rect(self.x,self.y,self.largura,self.altura)
         self.cor = cores[aba_type]
-    def desenha(self, tela):
+    def desenha(self,tela):
         pygame.draw.rect(tela,self.cor,self.area)
 
 def mostra_titulo(texto,x,y):
@@ -53,13 +53,14 @@ def mostra_titulo_aba(texto,x):
     text = font.render(texto,1,branco)
     textpos = text.get_rect(center =(x,30))
     tela.blit(text, textpos)
+    
 def cria_abas():
     lista_de_abas = []
-    for i in range(0,4):
-        aba = Aba(i,cores)
+    for a in range(0,4):
+        aba = Aba(a,cores)
         aba.desenha(tela)
         lista_de_abas.append(aba)
-        mostra_titulo_aba(f"ABA {i}", (largura_tela/4 *i)+100)
+        mostra_titulo_aba(f"ABA {a}", (largura_tela/4 *a)+100)
     return lista_de_abas
 
 def mostra_clock():
@@ -68,19 +69,14 @@ def mostra_clock():
     textpos = text.get_rect(center =(400,100))
     tela.blit(text, textpos)
     
-def contador_decrescente():
-    font = pygame.font.Font(None,20)
-    text = font.render("Segundos:" + str(conta_segundos),1,preto)
-    textpos = text.get_rect(center =(200,100))
-    tela.blit(text, textpos)
-  
+
 def conteudo_aba0():
     soma_indices = 0  
     mostra_titulo("ACME Inc.           Uso do espaço em disco pelos usuários",400,150)
     montar_tabela("------------------------------------------------------------------------",400,175)
-    montar_tabela("pid",200,200)
+    montar_tabela("pid",210,200)
     montar_tabela("rms",300,200)
-    montar_tabela("vms",450,200)
+    montar_tabela("vms",470,200)
     montar_tabela("% do uso",550,200)
     for item in lista_de_dicionario:
         montar_tabela(f'{item["pid"]:^20}       {item["nome"]:<20}          {item["vms"]/1024/1024:>13} Mb        {item["rss"]/1024/1024:>13}Mb {item["percento"]:>10}',400,220+soma_indices*20)                    
@@ -95,7 +91,7 @@ tela.fill(branco)
 aba0,aba1,aba2,aba3 =  cria_abas()
 
 while True:
-
+    
     dicionario = {'alexandre': 456123789, 'anderson': 1245698456,
               'antonio': 123456456, 'carlos': 91257581,
               'cesar':987458, 'rosemary': 789456125 }
@@ -168,7 +164,7 @@ while True:
                 
     if aba_setada == "aba_setada_0":
         tela.fill(branco)
-        for i in range(conta_clocks):
+        for b in range(conta_clocks):
             tela.fill(branco)
             mostra_clock()
             conteudo_aba0()
@@ -176,20 +172,20 @@ while True:
             
     if aba_setada == "aba_setada_1":
         tela.fill(branco)
-        for i in range(conta_clocks):
+        for c in range(conta_clocks):
             tela.fill(branco)
             mostra_clock()
             aba0, aba1, aba2, aba3 = cria_abas()
     if aba_setada == "aba_setada_2":
         tela.fill(branco)
-        for i in range(conta_clocks):
+        for d in range(conta_clocks):
             tela.fill(branco)
             mostra_clock()
             contador_decrescente()
             aba0, aba1, aba2, aba3 = cria_abas()
     if aba_setada == "aba_setada_3":
         tela.fill(branco)
-        for i in range(conta_clocks):
+        for e in range(conta_clocks):
             tela.fill(branco)
             mostra_clock()
             aba0, aba1, aba2, aba3 = cria_abas()
@@ -199,7 +195,7 @@ while True:
             sys.exit()
 
     pygame.display.update()
-    clock.tick(20)
+    clock.tick(50)
     
 pygame.display.quit()
      
