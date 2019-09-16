@@ -78,22 +78,23 @@ def conteudo_aba0():
     soma_indices = 0  
     mostra_titulo("ACME Inc.           Uso do espaço em disco pelos usuários",400,150)
     montar_tabela("------------------------------------------------------------------------",400,175)
-    montar_tabela("pid",210,200)
+    montar_tabela("pid",200,200)
     montar_tabela("rms",300,200)
-    montar_tabela("vms",470,200)
+    montar_tabela("vms",450,200)
     montar_tabela("% do uso",550,200)
     for item in lista_de_dicionario:
-        montar_tabela(f'{item["pid"]:^20}       {item["nome"]:<20}          {item["vms"]/1024/1024:>13} Mb        {item["rss"]/1024/1024:>13}Mb {item["percento"]:>10}',400,200+soma_indices*25)                    
+        montar_tabela(f'{item["pid"]:^20}       {item["nome"]:<20}          {item["vms"]/1024/1024:>13} Mb        {item["rss"]/1024/1024:>13}Mb {item["percento"]:>10}',400,220+soma_indices*20)                    
         soma_indices = soma_indices + 1
 
 clock = pygame.time.Clock()
 
 conta_clocks = 0
+conta_segundos = 60
 
 tela.fill(branco)
 aba0,aba1,aba2,aba3 =  cria_abas()
 
-while not terminou:
+while True:
 
     dicionario = {'alexandre': 456123789, 'anderson': 1245698456,
               'antonio': 123456456, 'carlos': 91257581,
@@ -134,32 +135,7 @@ while not terminou:
     
     
     
-    valores_Bytes = dicionario.values()
-
-    soma = sum(dicionario.values())
-    soma = soma/1024/1024
-    soma_media = soma/len(dicionario)
-    soma_indices = 1
-
-    for i in dicionario.keys():
-        valor = dicionario[i]
-        converter_mb = valor /1024/1024
-        dicionario[i] = round(converter_mb,2)
-
-    #print("ACME Inc.           Uso do espaço em disco pelos usuários",)
-    #print("------------------------------------------------------------------------")
-    #print("Nr.    Usuário        Espaço utilizado     % do uso")
-    #print("")
-        
-    for i in dicionario.keys():
-        dicionario[i] = round(dicionario[i],2)
-        porcentagem = round((dicionario[i]/soma)*100,2)
-        #print('{:^1}     {:<10}        {:>9,.2f}      {:>11,.2f}'.format(soma_indices, i, dicionario[i], porcentagem))
-        #soma_indices = soma_indices + 1
-
-    #print(" ")
-    #print("Total de memoria usada:", round(soma,2), "Mb")
-    #print("Media de memoria usada:", round(soma_media,2), "Mb")
+   
     
 
     
@@ -209,6 +185,7 @@ while not terminou:
         for i in range(conta_clocks):
             tela.fill(branco)
             mostra_clock()
+            contador_decrescente()
             aba0, aba1, aba2, aba3 = cria_abas()
     if aba_setada == "aba_setada_3":
         tela.fill(branco)
@@ -219,7 +196,7 @@ while not terminou:
                 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            terminou = True
+            sys.exit()
 
     pygame.display.update()
     clock.tick(20)
