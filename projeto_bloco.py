@@ -62,6 +62,30 @@ def cria_abas():
         mostra_titulo_aba(f"ABA {i}", (largura_tela/4 *i)+100)
     return lista_de_abas
 
+def mostra_clock():
+    font = pygame.font.Font(None,20)
+    text = font.render("Clock:" + str(conta_clocks),1,preto)
+    textpos = text.get_rect(center =(400,100))
+    tela.blit(text, textpos)
+    
+def contador_decrescente():
+    font = pygame.font.Font(None,20)
+    text = font.render("Segundos:" + str(conta_segundos),1,preto)
+    textpos = text.get_rect(center =(200,100))
+    tela.blit(text, textpos)
+  
+def conteudo_aba0():
+    soma_indices = 0  
+    mostra_titulo("ACME Inc.           Uso do espaço em disco pelos usuários",400,150)
+    montar_tabela("------------------------------------------------------------------------",400,175)
+    montar_tabela("pid",210,200)
+    montar_tabela("rms",300,200)
+    montar_tabela("vms",470,200)
+    montar_tabela("% do uso",550,200)
+    for item in lista_de_dicionario:
+        montar_tabela(f'{item["pid"]:^20}       {item["nome"]:<20}          {item["vms"]/1024/1024:>13} Mb        {item["rss"]/1024/1024:>13}Mb {item["percento"]:>10}',400,200+soma_indices*25)                    
+        soma_indices = soma_indices + 1
+
 clock = pygame.time.Clock()
 
 conta_clocks = 0
@@ -148,23 +172,7 @@ while not terminou:
             if aba0.area.collidepoint(pos):
                 tela.fill(branco)
                 aba0, aba1, aba2, aba3 = cria_abas()
-                mostra_titulo("ACME Inc.           Uso do espaço em disco pelos usuários",400,150)
-                montar_tabela("------------------------------------------------------------------------",400,175)
-                montar_tabela("pid",210,200)
-                montar_tabela("rms",300,200)
-                montar_tabela("vms",470,200)
-                montar_tabela("% do uso",550,200)
-                """montar_tabela("1",200,150+soma_indices*10),montar_tabela("alexandre",300,150+soma_indices*10),montar_tabela("456123789",450,150+soma_indices*10)
-                montar_tabela("2",200,170+soma_indices*10),montar_tabela("anderson",300,170+soma_indices*10),montar_tabela("1245698456",450,170+soma_indices*10)
-                montar_tabela("3",200,190+soma_indices*10),montar_tabela("antonio",300,190+soma_indices*10),montar_tabela("123456456",450,190+soma_indices*10)
-                montar_tabela("4",200,210+soma_indices*10),montar_tabela("carlos",300,210+soma_indices*10),montar_tabela("91257581",450,210+soma_indices*10)
-                montar_tabela("5",200,230+soma_indices*10),montar_tabela("cesar",300,230+soma_indices*10),montar_tabela("987458",450,230+soma_indices*10)
-                montar_tabela("5",200,250+soma_indices*10),montar_tabela("rosemary",300,250+soma_indices*10),montar_tabela("789456125",450,250+soma_indices*10)"""
-                
-                for item in lista_de_dicionario:
-                    montar_tabela(f'{item["pid"]:^20}       {item["nome"]:<20}          {item["vms"]/1024/1024:>13} Mb        {item["rss"]/1024/1024:>13}Mb {item["percento"]:>10}',400,200+soma_indices*25)                    
-                    soma_indices = soma_indices + 1
-                aba_setada = aba_setada_0
+                aba_setada = "aba_setada_0"
                     
             if aba1.area.collidepoint(pos):
                 tela.fill(branco)
@@ -175,28 +183,38 @@ while not terminou:
                 tela.fill(branco)
                 aba0, aba1, aba2, aba3 = cria_abas()
                 aba_setada = "aba_setada_2"
+                
             if aba3.area.collidepoint(pos):
                 tela.fill(branco)
                 aba0, aba1, aba2, aba3 = cria_abas()
                 aba_setada = "aba_setada_3"
                 
+                
+    if aba_setada == "aba_setada_0":
+        tela.fill(branco)
+        for i in range(conta_clocks):
+            tela.fill(branco)
+            mostra_clock()
+            conteudo_aba0()
+        aba0, aba1, aba2, aba3 = cria_abas()
+            
     if aba_setada == "aba_setada_1":
         tela.fill(branco)
         for i in range(conta_clocks):
             tela.fill(branco)
-            mostra_titulo(str(conta_clocks),400,200)
+            mostra_clock()
             aba0, aba1, aba2, aba3 = cria_abas()
     if aba_setada == "aba_setada_2":
         tela.fill(branco)
         for i in range(conta_clocks):
             tela.fill(branco)
-            mostra_titulo(str(conta_clocks),400,200)
+            mostra_clock()
             aba0, aba1, aba2, aba3 = cria_abas()
     if aba_setada == "aba_setada_3":
         tela.fill(branco)
         for i in range(conta_clocks):
             tela.fill(branco)
-            mostra_titulo(str(conta_clocks),400,200)
+            mostra_clock()
             aba0, aba1, aba2, aba3 = cria_abas()
                 
     for event in pygame.event.get():
@@ -208,6 +226,7 @@ while not terminou:
     
 pygame.display.quit()
      
+
 
 
 
