@@ -1,4 +1,4 @@
-import pygame, random
+import pygame, random, sys
 branco  = (255,255,255)
 preto = (0,0,0)
 verde = (0,255,0)
@@ -95,6 +95,7 @@ def conteudo_aba0():
         montar_tabela(f'{round(item["rss"]/1024/1024)}Mb',500,220+soma_indices*20)
         montar_tabela(f'{item["percento"]}',600,220+soma_indices*20)
         soma_indices = soma_indices + 1
+    montar_tabela("Teste",300,850)
 
 clock = pygame.time.Clock()
 
@@ -152,7 +153,9 @@ while True:
     for event in pygame.event.get():
         aba_setada = "null"
         if event.type == pygame.QUIT:
+            sys.exit()
             terminou = True
+            pygame.quit()
         if event.type == pygame.MOUSEBUTTONDOWN and event.button ==1:
             pos = pygame.mouse.get_pos()
             if aba0.area.collidepoint(pos):
@@ -207,10 +210,6 @@ while True:
             mostra_clock()
             aba0, aba1, aba2, aba3 = cria_abas()
                 
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            sys.exit()
-
     pygame.display.update()
     clock.tick(50)
     
