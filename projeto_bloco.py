@@ -87,14 +87,26 @@ def conteudo_aba0():
     montar_tabela("vms",350,190)
     montar_tabela("rss",500,190)
     montar_tabela("% do uso",600,190)
+
     for item in lista_de_dicionario:
         montar_tabela(f'{item["pid"]}',100,220+soma_indices*20)
         montar_tabela(f'{item["nome"]}',150,220+soma_indices*20)
         montar_tabela(f'{round(item["vms"]/1024/1024,2)} MB',350,220+soma_indices*20)
-        montar_tabela(f'{round(item["rss"]/1024/1024)}Mb',500,220+soma_indices*20)
-        montar_tabela(f'{item["percento"]}',600,220+soma_indices*20)
+        montar_tabela(f'{round(item["rss"]/1024/1024,2)} MB',500,220+soma_indices*20)
+        montar_tabela(f'{round(item["percento"]/100,2)} %',600,220+soma_indices*20)
         soma_indices = soma_indices + 1
-    montar_tabela("Teste",300,850)
+    soma_vms = 0
+    soma_rss = 0
+    soma_percent = 0
+    for i in lista_de_dicionario:
+        soma_vms = soma_vms + i["vms"]
+        soma_rss = soma_rss + i["rss"]
+        soma_percent = soma_percent + i["percento"]
+    
+        
+    montar_tabela(f'Total de uso do sistema: {round(soma_percent/100,2)}  %',100,(220+soma_indices*20)+50)
+    montar_tabela(f'Total de uso do vms: {round(soma_vms/1024/1024,2)}  MB',100,(220+soma_indices*20)+30)
+    montar_tabela(f'Total de uso do rss: {round(soma_rss/1024/1024,2)}  MB',100,(220+soma_indices*20)+10)
 
 clock = pygame.time.Clock()
 
