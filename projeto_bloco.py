@@ -13,11 +13,18 @@ pygame.mixer.init()
 pygame.font.init()
 
 largura_tela = 800
-altura_tela = 600
+altura_tela = 900
 
 tela = pygame.display.set_mode((largura_tela,altura_tela))
 
 terminou = False
+
+class Linha():
+    def __init__(self,x,y):
+        self.pontos = (x,y)      
+        self.cor = preto
+    def desenha(self,tela):
+        pygame.draw.polygon(tela,self.cor,self.pontos,1)
 
 class Aba():
     def __init__(self,aba_type,cor):
@@ -72,14 +79,17 @@ def mostra_clock():
 
 def conteudo_aba0():
     soma_indices = 0  
-    mostra_titulo("ACME Inc.           Uso do espaço em disco pelos usuários",400,150)
+    mostra_titulo("ACME Inc.      Uso do espaço em disco pelos usuários",400,150)
     montar_tabela("------------------------------------------------------------------------",400,175)
-    montar_tabela("pid",210,200)
-    montar_tabela("rms",300,200)
-    montar_tabela("vms",470,200)
-    montar_tabela("% do uso",550,200)
+    montar_tabela("pid",10,190)
+    montar_tabela("rms",300,190)
+    montar_tabela("vms",470,190)
+    montar_tabela("rss",570,190)
+    montar_tabela("% do uso",610,190)
+    linha = Linha((320,190),(320,700))
+    linha.desenha(tela)
     for item in lista_de_dicionario:
-        montar_tabela(f'{item["pid"]:^20}       {item["nome"]:<20}          {item["vms"]/1024/1024:>13} Mb        {item["rss"]/1024/1024:>13}Mb {item["percento"]:>10}',400,220+soma_indices*20)                    
+        montar_tabela(f'{item["pid"]:^20}       {item["nome"]:<20}          {round(item["vms"]/1024/1024,2):>13} Mb        {round(item["rss"]/1024/1024):>13}Mb {item["percento"]:>10}',400,220+soma_indices*20)                    
         soma_indices = soma_indices + 1
 
 clock = pygame.time.Clock()
@@ -162,10 +172,10 @@ while True:
                 aba_setada = "aba_setada_3"
                 
     if conta_clocks == 50:
-        if contasegundos>=0:
+        if conta_segundos>=0:
             conta_segundos+=1
-        conta_clocks = 0
-    aba0, aba1, aba2, aba3 = cria_abas()
+        
+    
 
     if aba_setada == "aba_setada_0":
         tela.fill(branco)
@@ -202,6 +212,7 @@ while True:
     
 pygame.display.quit()
      
+
 
 
 
