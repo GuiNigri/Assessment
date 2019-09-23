@@ -1,4 +1,4 @@
-import pygame, random,sys
+import pygame,sys
 branco  = (255,255,255)
 preto = (0,0,0)
 verde = (0,255,0)
