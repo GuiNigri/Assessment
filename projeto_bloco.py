@@ -164,6 +164,7 @@ while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             terminou = True
+            sys.exit()
         if event.type == pygame.MOUSEBUTTONDOWN and event.button ==1:
             pos = pygame.mouse.get_pos()
             if aba0.area.collidepoint(pos):
