@@ -1,4 +1,4 @@
-import pygame, random, sys
+import pygame, random,sys
 branco  = (255,255,255)
 preto = (0,0,0)
 verde = (0,255,0)
@@ -76,6 +76,12 @@ def mostra_clock():
     text = font.render("Clock:" + str(conta_clocks),1,preto)
     textpos = text.get_rect(center =(400,100))
     tela.blit(text, textpos)
+
+def mostra_segundos():
+    font = pygame.font.Font(None,20)
+    text = font.render("Segundos:" + str(conta_segundos),1,preto)
+    textpos = text.get_rect(center =(500,100))
+    tela.blit(text, textpos)
     
 
 def conteudo_aba0():
@@ -87,7 +93,6 @@ def conteudo_aba0():
     montar_tabela("vms",350,190)
     montar_tabela("rss",500,190)
     montar_tabela("% do uso",600,190)
-
     for item in lista_de_dicionario:
         montar_tabela(f'{item["pid"]}',100,220+soma_indices*20)
         montar_tabela(f'{item["nome"]}',150,220+soma_indices*20)
@@ -95,6 +100,9 @@ def conteudo_aba0():
         montar_tabela(f'{round(item["rss"]/1024/1024,2)} MB',500,220+soma_indices*20)
         montar_tabela(f'{round(item["percento"]/100,2)} %',600,220+soma_indices*20)
         soma_indices = soma_indices + 1
+
+
+
     soma_vms = 0
     soma_rss = 0
     soma_percent = 0
@@ -107,24 +115,11 @@ def conteudo_aba0():
     montar_tabela(f'Total de uso do sistema: {round(soma_percent/100,2)}  %',100,(220+soma_indices*20)+50)
     montar_tabela(f'Total de uso do vms: {round(soma_vms/1024/1024,2)}  MB',100,(220+soma_indices*20)+30)
     montar_tabela(f'Total de uso do rss: {round(soma_rss/1024/1024,2)}  MB',100,(220+soma_indices*20)+10)
-
-clock = pygame.time.Clock()
-
-conta_clocks = 0
-conta_segundos = 0
-
-tela.fill(branco)
-aba0,aba1,aba2,aba3 =  cria_abas()
-
-while True:
     
-    dicionario = {'alexandre': 456123789, 'anderson': 1245698456,
-              'antonio': 123456456, 'carlos': 91257581,
-              'cesar':987458, 'rosemary': 789456125 }
     
-    conta_clocks = conta_clocks + 1
     
-    lista_de_dicionario = [{'rss': 113979392, 'vms': 114520064, 'pid': 88, 'nome': 'Registry', 'percento': 379.85},
+    
+lista_de_dicionario = [{'rss': 113979392, 'vms': 114520064, 'pid': 88, 'nome': 'Registry', 'percento': 379.85},
                            {'rss': 35794944, 'vms': 20525056, 'pid': 948, 'nome': 'chrome.exe', 'percento': 50.7},
                            {'rss': 34332672, 'vms': 17887232, 'pid': 984, 'nome': 'svchost.exe', 'percento': 44.54},
                            {'rss': 255979520, 'vms': 22016000, 'pid': 1012, 'nome': 'fontdrvhost.exe', 'percento': 977.67},
@@ -154,19 +149,21 @@ while True:
                            {'rss': 192319488, 'vms': 167886848, 'pid': 9220, 'nome': 'chrome.exe', 'percento': 709.66},
                            {'rss': 67276800, 'vms': 41480192, 'pid': 9784, 'nome': 'chrome.exe', 'percento': 183.23},
                            {'rss': 60825600, 'vms': 35332096, 'pid': 9972, 'nome': 'chrome.exe', 'percento': 156.07}]
-    
-    
-    
-   
-    
 
-    
+clock = pygame.time.Clock()
+
+conta_clocks = 0
+conta_segundos = 0
+
+tela.fill(branco)
+aba0,aba1,aba2,aba3 =  cria_abas()
+aba_setada = "aba_setada_0"
+conteudo_aba0()
+
+while True:   
     for event in pygame.event.get():
-        aba_setada = "null"
         if event.type == pygame.QUIT:
-            sys.exit()
             terminou = True
-            pygame.quit()
         if event.type == pygame.MOUSEBUTTONDOWN and event.button ==1:
             pos = pygame.mouse.get_pos()
             if aba0.area.collidepoint(pos):
@@ -188,39 +185,29 @@ while True:
                 tela.fill(branco)
                 aba0, aba1, aba2, aba3 = cria_abas()
                 aba_setada = "aba_setada_3"
-                
+       
+    conta_clocks +=1
+    
     if conta_clocks == 50:
         if conta_segundos>=0:
             conta_segundos+=1
-        
-    
-
-    if aba_setada == "aba_setada_0":
+        conta_clocks = 0
         tela.fill(branco)
-        mostra_clock()
-        conteudo_aba0()
-        aba0, aba1, aba2, aba3 = cria_abas()
+        aba0, aba1, aba2, aba3 = cria_abas()  
+        if aba_setada == "aba_setada_0":
+            mostra_segundos()
+            conteudo_aba0()  
+        if aba_setada == "aba_setada_1":
+            mostra_segundos()
+        if aba_setada == "aba_setada_2":
+            mostra_segundos()
+        if aba_setada == "aba_setada_3":
+            mostra_segundos()  
             
-    if aba_setada == "aba_setada_1":
-        tela.fill(branco)
-        for c in range(conta_clocks):
-            tela.fill(branco)
-            mostra_clock()
-            aba0, aba1, aba2, aba3 = cria_abas()
-    if aba_setada == "aba_setada_2":
-        tela.fill(branco)
-        for d in range(conta_clocks):
-            tela.fill(branco)
-            mostra_clock()
-            contador_decrescente()
-            aba0, aba1, aba2, aba3 = cria_abas()
-    if aba_setada == "aba_setada_3":
-        tela.fill(branco)
-        for e in range(conta_clocks):
-            tela.fill(branco)
-            mostra_clock()
-            aba0, aba1, aba2, aba3 = cria_abas()
-                
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            sys.exit()
+
     pygame.display.update()
     clock.tick(50)
     
