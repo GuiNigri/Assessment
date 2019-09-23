@@ -53,6 +53,7 @@ def montar_tabela(texto,x,y):
     font = pygame.font.Font(None,20)
     text = font.render(texto, 1 ,preto)
     textpos = text.get_rect(center =(x,y))
+    textpos.left = x
     tela.blit(text,textpos)
 
 def mostra_titulo_aba(texto,x):
@@ -80,18 +81,16 @@ def mostra_clock():
 def conteudo_aba0():
     soma_indices = 0  
     mostra_titulo("ACME Inc.      Uso do espaço em disco pelos usuários",400,150)
-    montar_tabela("------------------------------------------------------------------------",400,175)
-    montar_tabela("pid",10,190)
-    montar_tabela("rms",300,190)
-    montar_tabela("vms",470,190)
-    montar_tabela("rss",570,190)
-    montar_tabela("% do uso",610,190)
-    linha = Linha((320,190),(320,700))
-    linha.desenha(tela)
+    montar_tabela("--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------",0,175)
+    montar_tabela("pid",100,190)
+    montar_tabela("rms",150,190)
+    montar_tabela("vms",350,190)
+    montar_tabela("rss",500,190)
+    montar_tabela("% do uso",600,190)
     for item in lista_de_dicionario:
         montar_tabela(f'{item["pid"]}',100,220+soma_indices*20)
-        montar_tabela(f'{item["nome"]}',200,220+soma_indices*20)
-        montar_tabela(f'{round(item["vms"]/1024/1024,2)} MB',300,220+soma_indices*20)
+        montar_tabela(f'{item["nome"]}',150,220+soma_indices*20)
+        montar_tabela(f'{round(item["vms"]/1024/1024,2)} MB',350,220+soma_indices*20)
         montar_tabela(f'{round(item["rss"]/1024/1024)}Mb',500,220+soma_indices*20)
         montar_tabela(f'{item["percento"]}',600,220+soma_indices*20)
         soma_indices = soma_indices + 1
@@ -215,6 +214,7 @@ while True:
     
 pygame.display.quit()
      
+
 
 
 
