@@ -89,7 +89,11 @@ def conteudo_aba0():
     linha = Linha((320,190),(320,700))
     linha.desenha(tela)
     for item in lista_de_dicionario:
-        montar_tabela(f'{item["pid"]:^20}       {item["nome"]:<20}          {round(item["vms"]/1024/1024,2):>13} Mb        {round(item["rss"]/1024/1024):>13}Mb {item["percento"]:>10}',400,220+soma_indices*20)                    
+        montar_tabela(f'{item["pid"]}',100,220+soma_indices*20)
+        montar_tabela(f'{item["nome"]}',200,220+soma_indices*20)
+        montar_tabela(f'{round(item["vms"]/1024/1024,2)} MB',300,220+soma_indices*20)
+        montar_tabela(f'{round(item["rss"]/1024/1024)}Mb',500,220+soma_indices*20)
+        montar_tabela(f'{item["percento"]}',600,220+soma_indices*20)
         soma_indices = soma_indices + 1
 
 clock = pygame.time.Clock()
