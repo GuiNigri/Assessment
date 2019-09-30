@@ -1,4 +1,4 @@
-import pygame, random,sys, os, time
+import pygame, random,sys,os,time
 branco  = (255,255,255)
 preto = (0,0,0)
 verde = (0,255,0)
@@ -16,6 +16,26 @@ largura_tela = 800
 altura_tela = 900
 
 tela = pygame.display.set_mode((largura_tela,altura_tela))
+lista = os.listdir("../Nova pasta")
+
+dic = {}
+
+for i in lista:
+    if os.path.isfile(i):
+        dic[i] = []
+        dic[i].append(os.stat(i).st_size)
+        dic[i].append(os.stat(i).st_atime)
+        dic[i].append(os.stat(i).st_mtime)
+
+print(dic)
+
+titulo = '{:11}'.format("Tamanho") # 10 caracteres + 1 de espaço
+# Concatenar com 25 caracteres + 2 de espaços
+titulo = titulo + '{:27}'.format("Data de Modificação")
+# Concatenar com 25 caracteres + 2 de espaços
+titulo = titulo + '{:27}'.format("Data de Criação")
+titulo = titulo + "Nome"
+print(titulo)
 
 terminou = False
 
@@ -84,7 +104,7 @@ def mostra_segundos():
     tela.blit(text, textpos)
     
 
-def conteudo_aba0():
+def conteudo_aba1():
     soma_indices = 0  
     mostra_titulo("ACME Inc.      Uso do espaço em disco pelos usuários",400,150)
     montar_tabela("--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------",0,175)
@@ -100,38 +120,37 @@ def conteudo_aba0():
         montar_tabela(f'{round(item["rss"]/1024/1024,2)} MB',500,220+soma_indices*20)
         montar_tabela(f'{round(item["percento"]/100,2)} %',600,220+soma_indices*20)
         soma_indices = soma_indices + 1
-
-
-
     soma_vms = 0
     soma_rss = 0
     soma_percent = 0
     for i in lista_de_dicionario:
         soma_vms = soma_vms + i["vms"]
         soma_rss = soma_rss + i["rss"]
-        soma_percent = soma_percent + i["percento"]
-    
-        
+        soma_percent = soma_percent + i["percento"]   
     montar_tabela(f'Total de uso do sistema: {round(soma_percent/100,2)}  %',100,(220+soma_indices*20)+50)
     montar_tabela(f'Total de uso do vms: {round(soma_vms/1024/1024,2)}  MB',100,(220+soma_indices*20)+30)
     montar_tabela(f'Total de uso do rss: {round(soma_rss/1024/1024,2)}  MB',100,(220+soma_indices*20)+10)
-
-def conteudo_aba1():
+    
+def conteudo_aba0():
+    posx = 10
     soma_indices = 0  
     mostra_titulo("ACME Inc.      Uso do espaço em disco pelos usuários",400,150)
     montar_tabela("--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------",0,175)
-    montar_tabela("Tamanho",100,190)
-    montar_tabela("Criação",200,190)
-    montar_tabela("Modificação",400,190)
+    montar_tabela("Tamanho",10,190)
+    montar_tabela("Criação",posx+90,190)
+    montar_tabela("Modificação",posx+290,190)
+    montar_tabela("Nome do arquivo",posx+470,190)
     
     lista = os.listdir()
     for i in lista: # Varia na lista dos arquivos e diretórios
         if os.path.isfile(i): # checa se é um arquivo
-            montar_tabela(f'{os.stat(i).st_size}', 100, 220+soma_indices*20) # Tamanho
-            montar_tabela(f'{time.ctime(os.stat(i).st_atime)}', 200, 220+soma_indices*20) # Tempo de criação
-            montar_tabela(f'{time.ctime(os.stat(i).st_mtime)}', 400, 220+soma_indices*20) # Tempo de modificação
+            kb = (dic[i][0]/1024)
+            tamanho = '{:10}'.format(str('{:.2f}'.format(kb)+' KB'))
+            montar_tabela(f'{tamanho}', posx, 220+soma_indices*20) # Tamanho
+            montar_tabela(f'{time.ctime(os.stat(i).st_atime)}', posx+90, 220+soma_indices*20) # Tempo de criação
+            montar_tabela(f'{time.ctime(os.stat(i).st_mtime)}', posx+290, 220+soma_indices*20) # Tempo de modificação
+            montar_tabela(f'{i}',posx+470,220+soma_indices*20)
             soma_indices = soma_indices + 1
-    
     
     
     
