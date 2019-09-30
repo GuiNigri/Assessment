@@ -1,4 +1,4 @@
-import pygame, random,sys
+import pygame, random,sys, os, time
 branco  = (255,255,255)
 preto = (0,0,0)
 verde = (0,255,0)
@@ -115,6 +115,22 @@ def conteudo_aba0():
     montar_tabela(f'Total de uso do sistema: {round(soma_percent/100,2)}  %',100,(220+soma_indices*20)+50)
     montar_tabela(f'Total de uso do vms: {round(soma_vms/1024/1024,2)}  MB',100,(220+soma_indices*20)+30)
     montar_tabela(f'Total de uso do rss: {round(soma_rss/1024/1024,2)}  MB',100,(220+soma_indices*20)+10)
+
+def conteudo_aba1():
+    soma_indices = 0  
+    mostra_titulo("ACME Inc.      Uso do espaço em disco pelos usuários",400,150)
+    montar_tabela("--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------",0,175)
+    montar_tabela("Tamanho",100,190)
+    montar_tabela("Criação",200,190)
+    montar_tabela("Modificação",400,190)
+    
+    lista = os.listdir()
+    for i in lista: # Varia na lista dos arquivos e diretórios
+        if os.path.isfile(i): # checa se é um arquivo
+            montar_tabela(f'{os.stat(i).st_size}', 100, 220+soma_indices*20) # Tamanho
+            montar_tabela(f'{time.ctime(os.stat(i).st_atime)}', 200, 220+soma_indices*20) # Tempo de criação
+            montar_tabela(f'{time.ctime(os.stat(i).st_mtime)}', 400, 220+soma_indices*20) # Tempo de modificação
+            soma_indices = soma_indices + 1
     
     
     
@@ -199,6 +215,7 @@ while True:
             conteudo_aba0()  
         if aba_setada == "aba_setada_1":
             mostra_segundos()
+            conteudo_aba1()
         if aba_setada == "aba_setada_2":
             mostra_segundos()
         if aba_setada == "aba_setada_3":
