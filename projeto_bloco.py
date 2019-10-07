@@ -1,4 +1,6 @@
-import pygame, random,sys,os,time
+import pygame, random,sys,os, time
+from datetime import datetime , timedelta
+from pytz import timezone 
 branco  = (255,255,255)
 preto = (0,0,0)
 verde = (0,255,0)
@@ -19,14 +21,19 @@ tela = pygame.display.set_mode((largura_tela,altura_tela))
 lista = os.listdir("../Nova pasta")
 
 dic = {}
+formato = "%d/%m/%Y %H:%M:%S"
+
 
 for i in lista:
     if os.path.isfile(i):
         dic[i] = []
+        timestamp_criacao = os.stat(i).st_atime
+        timestamp_modificacao = os.stat(i).st_mtime
+        data_criacao = time.strftime(formato, time.localtime(timestamp_criacao))
+        data_mod = time.strftime(formato, time.localtime(timestamp_modificacao))
         dic[i].append(os.stat(i).st_size)
-        dic[i].append(os.stat(i).st_atime)
-        dic[i].append(os.stat(i).st_mtime)
-
+        dic[i].append(data_criacao)
+        dic[i].append(data_mod)
 print(dic)
 
 titulo = '{:11}'.format("Tamanho") # 10 caracteres + 1 de espaço
@@ -35,7 +42,7 @@ titulo = titulo + '{:27}'.format("Data de Modificação")
 # Concatenar com 25 caracteres + 2 de espaços
 titulo = titulo + '{:27}'.format("Data de Criação")
 titulo = titulo + "Nome"
-print(titulo)
+#print(titulo)
 
 terminou = False
 
@@ -142,16 +149,22 @@ def conteudo_aba0():
     montar_tabela("Nome do arquivo",posx+470,190)
     
     lista = os.listdir()
+    
+    soma_tamanho = 0
+    for i in dic:
+        soma_tamanho = soma_tamanho + dic[i][0]
     for i in lista: # Varia na lista dos arquivos e diretórios
         if os.path.isfile(i): # checa se é um arquivo
             kb = (dic[i][0]/1024)
             tamanho = '{:10}'.format(str('{:.2f}'.format(kb)+' KB'))
             montar_tabela(f'{tamanho}', posx, 220+soma_indices*20) # Tamanho
-            montar_tabela(f'{time.ctime(os.stat(i).st_atime)}', posx+90, 220+soma_indices*20) # Tempo de criação
-            montar_tabela(f'{time.ctime(os.stat(i).st_mtime)}', posx+290, 220+soma_indices*20) # Tempo de modificação
+            montar_tabela(f'{dic[i][1]}', posx+90, 220+soma_indices*20) # Tempo de criação
+            montar_tabela(f'{dic[i][2]}', posx+290, 220+soma_indices*20) # Tempo de modificação
             montar_tabela(f'{i}',posx+470,220+soma_indices*20)
             soma_indices = soma_indices + 1
-    
+    montar_tabela(f'Tamanho total dos arquivos: {round((soma_tamanho/1024),2)} KB',posx,(220+soma_indices*20))
+    montar_tabela(f'Média de tamanho  dos arquivos: {round((soma_tamanho/len(tamanho)/1024),2)} KB',posx,(240+soma_indices*20))
+        
     
     
 lista_de_dicionario = [{'rss': 113979392, 'vms': 114520064, 'pid': 88, 'nome': 'Registry', 'percento': 379.85},
