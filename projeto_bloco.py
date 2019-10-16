@@ -1,4 +1,4 @@
-import pygame, random,sys,os, time
+import pygame, random,sys,os, time,psutil
 from datetime import datetime , timedelta
 from pytz import timezone 
 branco  = (255,255,255)
@@ -18,7 +18,7 @@ largura_tela = 800
 altura_tela = 900
 
 tela = pygame.display.set_mode((largura_tela,altura_tela))
-lista = os.listdir("../Nova pasta")
+lista = os.listdir("./")
 
 dic = {}
 formato = "%d/%m/%Y %H:%M:%S"
@@ -101,48 +101,71 @@ def cria_abas():
 def mostra_clock():
     font = pygame.font.Font(None,20)
     text = font.render("Clock:" + str(conta_clocks),1,preto)
-    textpos = text.get_rect(center =(400,100))
+    textpos = text.get_rect(center =(600,200))
     tela.blit(text, textpos)
 
 def mostra_segundos():
     font = pygame.font.Font(None,20)
     text = font.render("Segundos:" + str(conta_segundos),1,preto)
-    textpos = text.get_rect(center =(500,100))
+    textpos = text.get_rect(center =(600,120))
     tela.blit(text, textpos)
     
 
 def conteudo_aba1():
-    soma_indices = 0  
-    mostra_titulo("ACME Inc.      Uso do espaço em disco pelos usuários",400,150)
-    montar_tabela("--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------",0,175)
-    montar_tabela("pid",100,190)
-    montar_tabela("rms",150,190)
-    montar_tabela("vms",350,190)
-    montar_tabela("rss",500,190)
-    montar_tabela("% do uso",600,190)
-    for item in lista_de_dicionario:
-        montar_tabela(f'{item["pid"]}',100,220+soma_indices*20)
-        montar_tabela(f'{item["nome"]}',150,220+soma_indices*20)
-        montar_tabela(f'{round(item["vms"]/1024/1024,2)} MB',350,220+soma_indices*20)
-        montar_tabela(f'{round(item["rss"]/1024/1024,2)} MB',500,220+soma_indices*20)
-        montar_tabela(f'{round(item["percento"]/100,2)} %',600,220+soma_indices*20)
-        soma_indices = soma_indices + 1
     soma_vms = 0
     soma_rss = 0
     soma_percent = 0
-    for i in lista_de_dicionario:
-        soma_vms = soma_vms + i["vms"]
-        soma_rss = soma_rss + i["rss"]
-        soma_percent = soma_percent + i["percento"]   
-    montar_tabela(f'Total de uso do sistema: {round(soma_percent/100,2)}  %',100,(220+soma_indices*20)+50)
-    montar_tabela(f'Total de uso do vms: {round(soma_vms/1024/1024,2)}  MB',100,(220+soma_indices*20)+30)
-    montar_tabela(f'Total de uso do rss: {round(soma_rss/1024/1024,2)}  MB',100,(220+soma_indices*20)+10)
+    soma_indices = 0
+    for processos in psutil.process_iter():
+        if processos.status() == 'running':
+            soma_vms += round(processos.memory_info().vms/1024/1024,2)
+            soma_rss += round(processos.memory_info().rss/1024/1024,2)
+    print(soma_vms)
+    for p in psutil.process_iter():
+        if p.status() == 'running':
+            pid = p.pid
+            nome = p.name()
+            rss = p.memory_info().rss/1024/1024
+            vms = p.memory_info().vms/1024/1024
+            status = p.status()
+            montar_tabela(f'{pid}',10,220+soma_indices*20)
+            montar_tabela(f'{nome}',50,220+soma_indices*20)
+            montar_tabela(f'{round(vms,2)} MB',200,220+soma_indices*20)
+            montar_tabela(f'{round(rss,2)} MB',300,220+soma_indices*20)
+            montar_tabela(f'{round(vms/round(soma_vms,2),4)} %',400,220+soma_indices*20)
+            montar_tabela(f'{round(rss/round(soma_rss,2),4)} %',550,220+soma_indices*20)
+            soma_indices = soma_indices + 1
+    montar_tabela(f'Total de uso do sistema: {soma_percent/100}  %',10,150)
+    montar_tabela(f'Total de uso do vms: {soma_vms}  MB',10,130)
+    montar_tabela(f'Total de uso do rss: {soma_rss}  MB',10,110)
+    
+
+ 
+    mostra_titulo("ACME Inc.      Uso do espaço em disco pelos usuários",400,100)
+    montar_tabela("--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------",0,175)
+    montar_tabela("pid",10,190)
+    montar_tabela("rms",50,190)
+    montar_tabela("vms",200,190)
+    montar_tabela("rss",300,190)
+    montar_tabela("% do vms",400,190)
+    montar_tabela("% do rss",550,190)
+    """for item in lista_de_dicionario:
+        montar_tabela(f'{item["pid"]}',10,155+soma_indices*20)
+        montar_tabela(f'{item["nome"]}',50,155+soma_indices*20)
+        montar_tabela(f'{round(item["vms"]/1024/1024,2)} MB',200,155+soma_indices*20)
+        montar_tabela(f'{round(item["rss"]/1024/1024,2)} MB',300,155+soma_indices*20)
+        montar_tabela(f'{round(item["vms"]/round(soma_vms/1024/1024,2)/100,2)} %',400,155+soma_indices*20)
+        montar_tabela(f'{round(item["rss"]/round(soma_rss/1024/1024,2)/100,2)} %',500,155+soma_indices*20)
+        soma_indices = soma_indices + 1
+    montar_tabela(f'Total de uso do sistema: {round(soma_percent/100,2)}  %',200,(200)+50)
+    montar_tabela(f'Total de uso do vms: {round(soma_vms/1024/1024,2)}  MB',200,(200)+30)
+    montar_tabela(f'Total de uso do rss: {round(soma_rss/1024/1024,2)}  MB',200,(200)+10)"""
     
 def conteudo_aba0():
     posx = 10
     soma_indices = 0  
-    mostra_titulo("ACME Inc.      Uso do espaço em disco pelos usuários",400,150)
-    montar_tabela("--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------",0,175)
+    mostra_titulo("ACME Inc.      Uso do espaço em disco pelos usuários",400,100)
+    montar_tabela("--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------",0,130)
     montar_tabela("Tamanho",10,190)
     montar_tabela("Criação",posx+90,190)
     montar_tabela("Modificação",posx+290,190)
@@ -165,38 +188,8 @@ def conteudo_aba0():
     montar_tabela(f'Tamanho total dos arquivos: {round((soma_tamanho/1024),2)} KB',posx,(220+soma_indices*20))
     montar_tabela(f'Média de tamanho  dos arquivos: {round((soma_tamanho/len(tamanho)/1024),2)} KB',posx,(240+soma_indices*20))
         
-    
-    
-lista_de_dicionario = [{'rss': 113979392, 'vms': 114520064, 'pid': 88, 'nome': 'Registry', 'percento': 379.85},
-                           {'rss': 35794944, 'vms': 20525056, 'pid': 948, 'nome': 'chrome.exe', 'percento': 50.7},
-                           {'rss': 34332672, 'vms': 17887232, 'pid': 984, 'nome': 'svchost.exe', 'percento': 44.54},
-                           {'rss': 255979520, 'vms': 22016000, 'pid': 1012, 'nome': 'fontdrvhost.exe', 'percento': 977.67},
-                           {'rss': 35188736, 'vms': 25378816, 'pid': 1708, 'nome': 'svchost.exe', 'percento': 48.14},
-                           {'rss': 25681920, 'vms': 7020544, 'pid': 2300, 'nome': 'ApplicationFrameHost.exe', 'percento': 8.12},
-                           {'rss': 64212992, 'vms': 30863360, 'pid': 2372, 'nome': 'MicrosoftEdge.exe', 'percento': 170.34},
-                           {'rss': 26263552, 'vms': 6246400, 'pid': 2448, 'nome': 'MicrosoftEdgeCP.exe', 'percento': 10.57},
-                           {'rss': 114982912, 'vms': 154681344, 'pid': 2628, 'nome': 'MsMpEng.exe', 'percento': 384.08},
-                           {'rss': 25030656, 'vms': 9220096, 'pid': 4024, 'nome': 'svchost.exe', 'percento': 5.38},
-                           {'rss': 37093376, 'vms': 20942848, 'pid': 4116, 'nome': 'SkypeApp.exe', 'percento': 56.16},
-                           {'rss': 56758272, 'vms': 42430464, 'pid': 4760, 'nome': 'svchost.exe', 'percento': 138.95},
-                           {'rss': 45293568, 'vms': 24764416, 'pid': 5328, 'nome': 'vmware-hostd.exe', 'percento': 90.69},
-                           {'rss': 124157952, 'vms': 55316480, 'pid': 5400, 'nome': 'explorer.exe', 'percento': 422.7},
-                           {'rss': 24948736, 'vms': 5890048, 'pid': 5432, 'nome': 'sihost.exe', 'percento': 5.03},
-                           {'rss': 34627584, 'vms': 8003584, 'pid': 6560, 'nome': 'svchost.exe', 'percento': 45.78},
-                           {'rss': 79331328, 'vms': 33001472, 'pid': 6644, 'nome': 'ShellExperienceHost.exe', 'percento': 233.98},
-                           {'rss': 118439936, 'vms': 61276160, 'pid': 7024, 'nome': 'SearchUI.exe', 'percento': 398.63},
-                           {'rss': 80060416, 'vms': 55767040, 'pid': 7052, 'nome': 'chrome.exe', 'percento': 237.05},
-                           {'rss': 170975232, 'vms': 144072704, 'pid': 7468, 'nome': 'chrome.exe', 'percento': 619.8},
-                           {'rss': 78249984, 'vms': 47955968, 'pid': 7520, 'nome': 'thonny.exe', 'percento': 229.43},
-                           {'rss': 36786176, 'vms': 21307392, 'pid': 7628, 'nome': 'chrome.exe', 'percento': 54.87},
-                           {'rss': 102436864, 'vms': 77463552, 'pid': 7776, 'nome': 'chrome.exe', 'percento': 331.26},
-                           {'rss': 70623232, 'vms': 133386240, 'pid': 7868, 'nome': 'chrome.exe', 'percento': 197.32},
-                           {'rss': 125968384, 'vms': 63152128, 'pid': 7900, 'nome': 'chrome.exe', 'percento': 430.32},
-                           {'rss': 47972352, 'vms': 31125504, 'pid': 8384, 'nome': 'Microsoft.Photos.exe', 'percento': 101.96},
-                           {'rss': 48463872, 'vms': 38649856, 'pid': 9120, 'nome': 'dwm.exe', 'percento': 104.03},
-                           {'rss': 192319488, 'vms': 167886848, 'pid': 9220, 'nome': 'chrome.exe', 'percento': 709.66},
-                           {'rss': 67276800, 'vms': 41480192, 'pid': 9784, 'nome': 'chrome.exe', 'percento': 183.23},
-                           {'rss': 60825600, 'vms': 35332096, 'pid': 9972, 'nome': 'chrome.exe', 'percento': 156.07}]
+
+
 
 clock = pygame.time.Clock()
 
@@ -262,6 +255,7 @@ while True:
     
 pygame.display.quit()
      
+
 
 
 
