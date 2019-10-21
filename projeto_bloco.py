@@ -21,6 +21,7 @@ tela = pygame.display.set_mode((largura_tela,altura_tela))
 lista = os.listdir("./")
 
 dic = {}
+dic2 = {}
 formato = "%d/%m/%Y %H:%M:%S"
 
 
@@ -128,9 +129,13 @@ def conteudo_aba1():
         if p.status() == 'running':
             pid = p.pid
             nome = p.name()
+            dic2[nome] = []
             rss = p.memory_info().rss/1024/1024
             vms = p.memory_info().vms/1024/1024
             status = p.status()
+            dic2[nome].append(pid)
+            dic2[nome].append(rss)
+            dic2[nome].append(vms)
             montar_tabela(f'{pid}',10,220+soma_indices*20)
             montar_tabela(f'{nome}',70,220+soma_indices*20)
             montar_tabela(f'{round(vms,2)} MB',250,220+soma_indices*20)
@@ -255,3 +260,4 @@ while True:
     clock.tick(50)
     
 pygame.display.quit()
+
