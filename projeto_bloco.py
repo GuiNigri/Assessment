@@ -135,9 +135,10 @@ def conteudo_aba1():
             montar_tabela(f'{round(vms/round(soma_vms,2),4)} %',400,220+soma_indices*20)
             montar_tabela(f'{round(rss/round(soma_rss,2),4)} %',550,220+soma_indices*20)
             soma_indices = soma_indices + 1
-    montar_tabela(f'Total de uso do sistema: {soma_percent/100}  %',10,150)
-    montar_tabela(f'Total de uso do vms: {soma_vms}  MB',10,130)
-    montar_tabela(f'Total de uso do rss: {soma_rss}  MB',10,110)
+    montar_tabela(f'Percentual de uso do vms: {round(soma_vms/100,3)}  %',10,150)
+    montar_tabela(f'Percentual de uso do rss: {round(soma_rss/100,3)}  %',350,150)
+    montar_tabela(f'Total de uso do vms: {round(soma_vms/1024,3)}  GB',10,130)
+    montar_tabela(f'Total de uso do rss: {round(soma_rss/1024,3)}  GB',10,110)
     
 
  
@@ -255,6 +256,7 @@ while True:
     
 pygame.display.quit()
      
+
 
 
 
