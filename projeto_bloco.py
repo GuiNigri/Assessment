@@ -1,4 +1,4 @@
-import pygame, random,sys,os, time,psutil
+import pygame,sys,os, time,psutil
 from datetime import datetime , timedelta
 from pytz import timezone 
 branco  = (255,255,255)
@@ -121,7 +121,10 @@ def conteudo_aba1():
             soma_vms += round(processos.memory_info().vms/1024/1024,2)
             soma_rss += round(processos.memory_info().rss/1024/1024,2)
     print(soma_vms)
-    for p in psutil.process_iter():
+    lista_processos_ordenados = []
+    for elemento in sorted(psutil.process_iter(), key=lambda x : x.memory_info().rss, reverse = True):
+        lista_processos_ordenados.append(elemento)
+    for p in lista_processos_ordenados:
         if p.status() == 'running':
             pid = p.pid
             nome = p.name()
@@ -129,26 +132,24 @@ def conteudo_aba1():
             vms = p.memory_info().vms/1024/1024
             status = p.status()
             montar_tabela(f'{pid}',10,220+soma_indices*20)
-            montar_tabela(f'{nome}',50,220+soma_indices*20)
-            montar_tabela(f'{round(vms,2)} MB',200,220+soma_indices*20)
-            montar_tabela(f'{round(rss,2)} MB',300,220+soma_indices*20)
-            montar_tabela(f'{round(vms/round(soma_vms,2),4)} %',400,220+soma_indices*20)
+            montar_tabela(f'{nome}',70,220+soma_indices*20)
+            montar_tabela(f'{round(vms,2)} MB',250,220+soma_indices*20)
+            montar_tabela(f'{round(rss,2)} MB',350,220+soma_indices*20)
+            montar_tabela(f'{round(vms/round(soma_vms,2),4)} %',450,220+soma_indices*20)
             montar_tabela(f'{round(rss/round(soma_rss,2),4)} %',550,220+soma_indices*20)
             soma_indices = soma_indices + 1
-    montar_tabela(f'Percentual de uso do vms: {round(soma_vms/100,3)}  %',10,150)
-    montar_tabela(f'Percentual de uso do rss: {round(soma_rss/100,3)}  %',350,150)
-    montar_tabela(f'Total de uso do vms: {round(soma_vms/1024,3)}  GB',10,130)
-    montar_tabela(f'Total de uso do rss: {round(soma_rss/1024,3)}  GB',10,110)
+    montar_tabela(f'Total de uso do sistema: {soma_percent/100}  %',10,150)
+    montar_tabela(f'Total de uso do vms: {soma_vms}  MB',10,130)
+    montar_tabela(f'Total de uso do rss: {soma_rss}  MB',10,110)
     
 
  
-    mostra_titulo("ACME Inc.      Uso do espaço em disco pelos usuários",400,100)
     montar_tabela("--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------",0,175)
     montar_tabela("pid",10,190)
-    montar_tabela("rms",50,190)
-    montar_tabela("vms",200,190)
-    montar_tabela("rss",300,190)
-    montar_tabela("% do vms",400,190)
+    montar_tabela("rms",70,190)
+    montar_tabela("vms",250,190)
+    montar_tabela("rss",350,190)
+    montar_tabela("% do vms",450,190)
     montar_tabela("% do rss",550,190)
     """for item in lista_de_dicionario:
         montar_tabela(f'{item["pid"]}',10,155+soma_indices*20)
@@ -165,7 +166,6 @@ def conteudo_aba1():
 def conteudo_aba0():
     posx = 10
     soma_indices = 0  
-    mostra_titulo("ACME Inc.      Uso do espaço em disco pelos usuários",400,100)
     montar_tabela("--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------",0,130)
     montar_tabela("Tamanho",10,190)
     montar_tabela("Criação",posx+90,190)
@@ -255,14 +255,3 @@ while True:
     clock.tick(50)
     
 pygame.display.quit()
-     
-
-
-
-
-
-
-
-
-
-
