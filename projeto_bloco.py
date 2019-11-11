@@ -117,31 +117,35 @@ def conteudo_aba1():
     soma_rss = 0
     soma_percent = 0
     soma_indices = 0
-    for processos in psutil.process_iter():
-        if processos.status() == 'running':
-            soma_vms += round(processos.memory_info().vms/1024/1024,2)
-            soma_rss += round(processos.memory_info().rss/1024/1024,2)
-    print(soma_vms)
-    lista_processos_ordenados = []
-    for elemento in sorted(psutil.process_iter(), key=lambda x : x.memory_info().rss, reverse = True):
-        lista_processos_ordenados.append(elemento)
-    for p in lista_processos_ordenados:
-        if p.status() == 'running':
-            pid = p.pid
-            nome = p.name()
-            rss = p.memory_info().rss/1024/1024
-            vms = p.memory_info().vms/1024/1024
-            status = p.status()
-            montar_tabela(f'{pid}',10,220+soma_indices*20)
-            montar_tabela(f'{nome}',70,220+soma_indices*20)
-            montar_tabela(f'{round(vms,2)} MB',250,220+soma_indices*20)
-            montar_tabela(f'{round(rss,2)} MB',350,220+soma_indices*20)
-            montar_tabela(f'{round(vms/round(soma_vms,2),4)} %',450,220+soma_indices*20)
-            montar_tabela(f'{round(rss/round(soma_rss,2),4)} %',550,220+soma_indices*20)
-            soma_indices = soma_indices + 1
+    try:
+        for processos in psutil.process_iter():
+            if processos.status() == 'running':
+                soma_vms += round(processos.memory_info().vms/1024/1024,2)
+                soma_rss += round(processos.memory_info().rss/1024/1024,2)
+        print(soma_vms)
+        lista_processos_ordenados = []
+        for elemento in sorted(psutil.process_iter(), key=lambda x : x.memory_info().rss, reverse = True):
+            lista_processos_ordenados.append(elemento)
+        for p in lista_processos_ordenados:
+            if p.status() == 'running':
+                pid = p.pid
+                nome = p.name()
+                rss = p.memory_info().rss/1024/1024
+                vms = p.memory_info().vms/1024/1024
+                status = p.status()
+                montar_tabela(f'{pid}',10,220+soma_indices*20)
+                montar_tabela(f'{nome}',70,220+soma_indices*20)
+                montar_tabela(f'{round(vms,2)} MB',250,220+soma_indices*20)
+                montar_tabela(f'{round(rss,2)} MB',350,220+soma_indices*20)
+                montar_tabela(f'{round(vms/round(soma_vms,2),4)} %',450,220+soma_indices*20)
+                montar_tabela(f'{round(rss/round(soma_rss,2),4)} %',550,220+soma_indices*20)
+                soma_indices = soma_indices + 1
+    except psutil.NoSuchProcess:
+        pass
+        
     montar_tabela(f'Total de uso do sistema: {soma_percent/100}  %',10,150)
-    montar_tabela(f'Total de uso do vms: {soma_vms}  MB',10,130)
-    montar_tabela(f'Total de uso do rss: {soma_rss}  MB',10,110)
+    montar_tabela(f'Total de uso do vms: {round(soma_vms,2)}  MB',10,130)
+    montar_tabela(f'Total de uso do rss: {round(soma_rss,2)}  MB',10,110)
     
 
  
@@ -256,4 +260,3 @@ while True:
     clock.tick(50)
     
 pygame.display.quit()
-
