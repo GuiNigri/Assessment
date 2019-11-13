@@ -1,4 +1,4 @@
-import pygame,sys,os, time,psutil, netifaces
+import pygame,sys,os, time,psutil
 from datetime import datetime , timedelta
 from pytz import timezone 
 branco  = (255,255,255)
@@ -198,33 +198,36 @@ def conteudo_aba0():
 def conteudo_aba3():
     soma_indices = 0
     interfaces = psutil.net_if_addrs()
-    #print(interfaces)
+    print(interfaces)
     #print(interfaces)
    #nomes = []
     """for nome_da_rede in interfaces:
         nomes.append(str(nome_da_rede))
     print(nomes)"""
-    identifica_ip_router = netifaces.gateways()
-    #print(identifica_ip_router)
-    for i, j in identifica_ip_router.items():
-        try:
-            gat = j[2][0]
-        except:
-            pass
-    montar_tabela("Nome da Rede", 5,200)
-    montar_tabela("Endereço Ip da Rede", 200,200)
-    montar_tabela("Mascara de Rede", 350,200)
-    montar_tabela("Gateway: ", 5,160)
-    montar_tabela(gat, 85,160)
+    montar_tabela("Nome da Rede", 5,190)
+    montar_tabela("Endereço Ip da Rede", 150,190)
     for nome_rede, info_rede in interfaces.items():
-        montar_tabela(f'{nome_rede}',5,220+soma_indices*20)
+        montar_tabela(f'{nome_rede}',5,210+soma_indices*20)
         #Endereço_IP
-        montar_tabela(f'{info_rede[1][1]}',200,220+soma_indices*20)
-        #mascara
-        montar_tabela(f'{info_rede[1][2]}',350,220+soma_indices*20)
+        montar_tabela(f'{info_rede[1][1]}',150,210+soma_indices*20)
         #for j in interfaces[i]:
             #montar_tabela("\t"+str(j),5,300+soma_indices*20)
         soma_indices = soma_indices + 1
+
+def conteudo_aba2():
+    soma_indices = 0
+    for proc in psutil.pids():
+        p = psutil.Process(proc)
+        #print(psutil.net_io_counters())
+        if p.connections():
+           try:
+               #montar_tabela(f'{proc}',5,100+soma_indices*20)
+                #montar_tabela(f'{psutil.net_io_counters()}',5,150+soma_indices*20)
+                print(psutil.net_io_counters(proc))
+            except psutil.NoSuchProcess:
+                print("erro")
+            soma_indices = soma_indices +1 
+
             
 
 
@@ -236,8 +239,8 @@ conta_segundos = 0
 
 tela.fill(branco)
 aba0,aba1,aba2,aba3 =  cria_abas()
-aba_setada = "aba_setada_3"
-conteudo_aba3()
+aba_setada = "aba_setada_2"
+conteudo_aba2()
 
 while True:   
     for event in pygame.event.get():
@@ -281,6 +284,7 @@ while True:
             conteudo_aba1()
         if aba_setada == "aba_setada_2":
             mostra_segundos()
+            conteudo_aba2()
         if aba_setada == "aba_setada_3":
             mostra_segundos()
             conteudo_aba3()
@@ -293,3 +297,5 @@ while True:
     clock.tick(50)
     
 pygame.display.quit()
+
+
