@@ -122,7 +122,7 @@ def conteudo_aba1():
             if processos.status() == 'running':
                 soma_vms += round(processos.memory_info().vms/1024/1024,2)
                 soma_rss += round(processos.memory_info().rss/1024/1024,2)
-        print(soma_vms)
+        #print(soma_vms)
         lista_processos_ordenados = []
         for elemento in sorted(psutil.process_iter(), key=lambda x : x.memory_info().rss, reverse = True):
             lista_processos_ordenados.append(elemento)
@@ -193,7 +193,23 @@ def conteudo_aba0():
             soma_indices = soma_indices + 1
     montar_tabela(f'Tamanho total dos arquivos: {round((soma_tamanho/1024),2)} KB',posx,(220+soma_indices*20))
     montar_tabela(f'Média de tamanho  dos arquivos: {round((soma_tamanho/len(tamanho)/1024),2)} KB',posx,(240+soma_indices*20))
-        
+    
+
+def conteudo_aba3():
+    soma_indices = 0
+    interfaces = psutil.net_if_addrs()
+    print(interfaces)
+    nomes = []
+    for nome_da_rede in interfaces:
+        nomes.append(str(nome_da_rede))
+    print(nomes)
+    for nome_rede, info_rede in interfaces.items():
+        montar_tabela(nome_rede,5,200+soma_indices*20)
+        montar_tabela(info_rede[0],20,250+soma_indices*20)
+        #for j in interfaces[i]:
+            #montar_tabela("\t"+str(j),5,300+soma_indices*20)
+        soma_indices = soma_indices + 1
+            
 
 
 
@@ -250,7 +266,8 @@ while True:
         if aba_setada == "aba_setada_2":
             mostra_segundos()
         if aba_setada == "aba_setada_3":
-            mostra_segundos()  
+            mostra_segundos()
+            conteudo_aba3()
             
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -260,3 +277,5 @@ while True:
     clock.tick(50)
     
 pygame.display.quit()
+
+
