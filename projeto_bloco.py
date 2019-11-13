@@ -199,13 +199,17 @@ def conteudo_aba3():
     soma_indices = 0
     interfaces = psutil.net_if_addrs()
     print(interfaces)
-    nomes = []
-    for nome_da_rede in interfaces:
+    #print(interfaces)
+   #nomes = []
+    """for nome_da_rede in interfaces:
         nomes.append(str(nome_da_rede))
-    print(nomes)
+    print(nomes)"""
+    montar_tabela("Nome da Rede", 5,190)
+    montar_tabela("Endereço Ip da Rede", 150,190)
     for nome_rede, info_rede in interfaces.items():
-        montar_tabela(nome_rede,5,200+soma_indices*20)
-        montar_tabela(info_rede[0],20,250+soma_indices*20)
+        montar_tabela(f'{nome_rede}',5,210+soma_indices*20)
+        #Endereço_IP
+        montar_tabela(f'{info_rede[1][1]}',150,210+soma_indices*20)
         #for j in interfaces[i]:
             #montar_tabela("\t"+str(j),5,300+soma_indices*20)
         soma_indices = soma_indices + 1
@@ -220,8 +224,8 @@ conta_segundos = 0
 
 tela.fill(branco)
 aba0,aba1,aba2,aba3 =  cria_abas()
-aba_setada = "aba_setada_0"
-conteudo_aba0()
+aba_setada = "aba_setada_3"
+conteudo_aba3()
 
 while True:   
     for event in pygame.event.get():
