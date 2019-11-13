@@ -1,4 +1,4 @@
-import pygame,sys,os, time,psutil
+import pygame,sys,os, time,psutil, netifaces
 from datetime import datetime , timedelta
 from pytz import timezone 
 branco  = (255,255,255)
@@ -198,18 +198,30 @@ def conteudo_aba0():
 def conteudo_aba3():
     soma_indices = 0
     interfaces = psutil.net_if_addrs()
-    print(interfaces)
+    #print(interfaces)
     #print(interfaces)
    #nomes = []
     """for nome_da_rede in interfaces:
         nomes.append(str(nome_da_rede))
     print(nomes)"""
-    montar_tabela("Nome da Rede", 5,190)
-    montar_tabela("Endereço Ip da Rede", 150,190)
+    identifica_ip_router = netifaces.gateways()
+    #print(identifica_ip_router)
+    for i, j in identifica_ip_router.items():
+        try:
+            gat = j[2][0]
+        except:
+            pass
+    montar_tabela("Nome da Rede", 5,200)
+    montar_tabela("Endereço Ip da Rede", 200,200)
+    montar_tabela("Mascara de Rede", 350,200)
+    montar_tabela("Gateway: ", 5,160)
+    montar_tabela(gat, 85,160)
     for nome_rede, info_rede in interfaces.items():
-        montar_tabela(f'{nome_rede}',5,210+soma_indices*20)
+        montar_tabela(f'{nome_rede}',5,220+soma_indices*20)
         #Endereço_IP
-        montar_tabela(f'{info_rede[1][1]}',150,210+soma_indices*20)
+        montar_tabela(f'{info_rede[1][1]}',200,220+soma_indices*20)
+        #mascara
+        montar_tabela(f'{info_rede[1][2]}',350,220+soma_indices*20)
         #for j in interfaces[i]:
             #montar_tabela("\t"+str(j),5,300+soma_indices*20)
         soma_indices = soma_indices + 1
@@ -281,5 +293,3 @@ while True:
     clock.tick(50)
     
 pygame.display.quit()
-
-
