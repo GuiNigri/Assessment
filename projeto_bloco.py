@@ -1,4 +1,4 @@
-import pygame,sys,os, time,psutil
+import pygame,sys,os, time,psutil, netifaces
 from datetime import datetime , timedelta
 from pytz import timezone 
 branco  = (255,255,255)
