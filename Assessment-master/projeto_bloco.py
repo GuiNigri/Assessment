@@ -24,7 +24,6 @@ dic = {}
 dic2 = {}
 formato = "%d/%m/%Y %H:%M:%S"
 
-
 for i in lista:
     if os.path.isfile(i):
         dic[i] = []
@@ -111,7 +110,6 @@ def mostra_segundos():
     textpos = text.get_rect(center =(600,120))
     tela.blit(text, textpos)
     
-
 def conteudo_aba1():
     soma_vms = 0
     soma_rss = 0
@@ -147,8 +145,6 @@ def conteudo_aba1():
     montar_tabela(f'Total de uso do vms: {round(soma_vms,2)}  MB',10,130)
     montar_tabela(f'Total de uso do rss: {round(soma_rss,2)}  MB',10,110)
     
-
- 
     montar_tabela("--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------",0,175)
     montar_tabela("pid",10,190)
     montar_tabela("rms",70,190)
@@ -197,13 +193,22 @@ def conteudo_aba0():
 def conteudo_aba3():
     interfaces = psutil.net_if_addrs()
     gws = netifaces.gateways()
+    status = psutil.net_if_stats()
     for info in interfaces:
+        montar_tabela(f'{gws}',10,100)
+        print("Gateway")
         print(gws)
-        print("===============")
     for j in interfaces:
+       #montar_tabela(f'{"\t"+str(j)}',10,200)
         print("\t"+str(j))
-        print("---------------")
-        
+        print("Portas")
+    for i in status:
+        montar_tabela(f'{i}',10,300)
+       #montar_tabela(f'{"\t"+str(status[i])}',10,400)
+        print(i)
+        print("\t"+str(status[i]))
+        print("Status")
+
 clock = pygame.time.Clock()
 
 conta_clocks = 0
