@@ -10,6 +10,7 @@ darkBlue = (2 , 24 , 89)
 cores = [azul,red,darkBlue,preto]
 
 
+
 pygame.mixer.init()
 
 pygame.font.init()
@@ -111,19 +112,31 @@ def mostra_segundos():
     textpos = text.get_rect(center =(600,120))
     tela.blit(text, textpos)
     
+def pega_processos(tipo):
+    for proc in psutil.process_iter():
+        if tipo == "grafico":
+            if proc.status() == 'running':
+                soma_vms += round(proc.memory_info().vms/1024/1024,2)
+                soma_rss += round(proc.memory_info().rss/1024/1024,2)
+        return soma_vms
+        return soma_rss
+                
+        if tipo == "somas":
+            lista_pid.append(proc.pid)
+            lista_vms.append(proc.memory_info().vms)
+        return lista_pid
+        return lista_vms
+            
+
+    
 def desenha_grafico():
     import matplotlib
     import matplotlib.pyplot as plt
     matplotlib.use("Agg")
     import matplotlib.backends.backend_agg as agg
-    
     lista_pid = []
     lista_vms = []
-    for proc in psutil.process_iter():
-        lista_pid.append(proc.pid)
-        lista_vms.append(proc.memory_info().vms)
-    print(lista_pid)
-    print(lista_vms)
+    pega_processos("grafico")
     names = lista_pid
     values = lista_vms
 
@@ -142,15 +155,12 @@ def desenha_grafico():
     
 
 def conteudo_aba1():
-    soma_vms = 0
-    soma_rss = 0
     soma_percent = 0
     soma_indices = 0
+    soma_vms = 0
+    soma_rss = 0
     try:
-        for processos in psutil.process_iter():
-            if processos.status() == 'running':
-                soma_vms += round(processos.memory_info().vms/1024/1024,2)
-                soma_rss += round(processos.memory_info().rss/1024/1024,2)
+        pega_processos("somas")
         #print(soma_vms)
         lista_processos_ordenados = []
         for elemento in sorted(psutil.process_iter(), key=lambda x : x.memory_info().rss, reverse = True):
