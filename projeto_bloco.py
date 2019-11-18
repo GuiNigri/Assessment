@@ -111,6 +111,35 @@ def mostra_segundos():
     textpos = text.get_rect(center =(600,120))
     tela.blit(text, textpos)
     
+def desenha_grafico():
+    import matplotlib
+    import matplotlib.pyplot as plt
+    matplotlib.use("Agg")
+    import matplotlib.backends.backend_agg as agg
+    
+    lista_pid = []
+    lista_vms = []
+    for proc in psutil.process_iter():
+        lista_pid.append(proc.pid)
+        lista_vms.append(proc.memory_info().vms)
+    print(lista_pid)
+    print(lista_vms)
+    names = lista_pid
+    values = lista_vms
+
+    fig, axs = plt.subplots()
+    axs.plot(names, values)
+    fig.suptitle('Categorical Plotting')
+
+    canvas = agg.FigureCanvasAgg(fig)
+    canvas.draw()
+    size = canvas.get_width_height()
+    renderer = canvas.get_renderer()
+    raw_data = renderer.tostring_rgb()
+
+    surf = pygame.image.fromstring(raw_data, size, "RGB")
+    tela.blit(surf, (100,150))
+    
 
 def conteudo_aba1():
     soma_vms = 0
@@ -227,27 +256,7 @@ def conteudo_aba2():
         soma_indices = soma_indices + 1
             
 def conteudo_aba3():
-    import matplotlib
-    import matplotlib.pyplot as plt
-    matplotlib.use("Agg")
-    import matplotlib.backends.backend_agg as agg
-    data = {'System Idle Process': 53248, 'System': 212992, 'Registry': 109453312, 'svchost.exe': 8384512, 'fontdrvhost.exe': 10928128, 'smss.exe': 499712, 'chrome.exe': 1974272, 'csrss.exe': 2220032, 'conhost.exe': 5558272, 'wininit.exe': 1368064, 'winlogon.exe': 2277376, 'services.exe': 5570560, 'lsass.exe': 6852608, 'unsecapp.exe': 1343488, 'dwm.exe': 55586816, 'audiodg.exe': 10899456, 'igfxCUIService.exe': 2052096, 'sihost.exe': 6144000, 'taskhostw.exe': 6189056, 'atiesrxx.exe': 1363968, 'atieclxx.exe': 1806336, 'WmiPrvSE.exe': 9449472, 'Memory Compression': 32768,}
-            #'vmware-authd.exe': 5914624, 'AGMService.exe': 2404352, 'vmnat.exe': 2740224, 'RtkAudioService64.exe': 1789952, 'SearchFilterHost.exe': 1437696, 'AGSService.exe': 3035136, 'AERTSr64.exe': 663552, 'MicrosoftEdgeCP.exe': 5287936, 'RuntimeBroker.exe': 5890048, 'spoolsv.exe': 5771264, 'armsvc.exe': 1396736, 'explorer.exe': 49389568, 'vmnetdhcp.exe': 7983104, 'MsMpEng.exe': 160911360, 'SecurityHealthService.exe': 4235264, 'mysqld.exe': 370147328, 'RAVBg64.exe': 5873664, 'ctfmon.exe': 4661248, 'w.exe': 5083136, 'SkypeApp.exe': 19021824, 'cmd.exe': 3817472, 'SearchUI.exe': 66932736, 'FileCoAuth.exe': 2002944, 'ShellExperienceHost.exe': 30146560, 'igfxEM.exe': 3600384, 'igfxHK.exe': 2379776, 'MicrosoftEdge.exe': 26021888, 'python.exe': 12304384, 'thonny.exe': 50040832, 'SgrmBroker.exe': 2351104, 'ApplicationFrameHost.exe': 10018816, 'browser_broker.exe': 2023424, 'MSASCuiL.exe': 1994752, 'dllhost.exe': 1581056, 'PresentationFontCache.exe': 26099712, 'GoogleCrashHandler.exe': 1699840, 'GoogleCrashHandler64.exe': 1781760, 'SearchProtocolHost.exe': 2465792, 'RtkNGUI64.exe': 4902912, 'SearchIndexer.exe': 43053056, 'MOM.exe': 28057600, 'vmware-tray.exe': 4071424, 'CCC.exe': 77570048, 'NisSrv.exe': 4374528}
-    names = list(data.keys())
-    values = list(data.values())
-
-    fig, axs = plt.subplots()
-    axs.bar(names, values)
-    fig.suptitle('Categorical Plotting')
-
-    canvas = agg.FigureCanvasAgg(fig)
-    canvas.draw()
-    size = canvas.get_width_height()
-    renderer = canvas.get_renderer()
-    raw_data = renderer.tostring_rgb()
-
-    surf = pygame.image.fromstring(raw_data, size, "RGB")
-    tela.blit(surf, (0,0))
+    desenha_grafico()
 
 
 clock = pygame.time.Clock()
