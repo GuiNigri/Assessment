@@ -113,19 +113,22 @@ def mostra_segundos():
     tela.blit(text, textpos)
     
 def pega_processos(tipo):
-    for proc in psutil.process_iter():
-        if tipo == "grafico":
-            if proc.status() == 'running':
-                soma_vms += round(proc.memory_info().vms/1024/1024,2)
-                soma_rss += round(proc.memory_info().rss/1024/1024,2)
-        return soma_vms
-        return soma_rss
-                
         if tipo == "somas":
-            lista_pid.append(proc.pid)
-            lista_vms.append(proc.memory_info().vms)
-        return lista_pid
-        return lista_vms
+            soma_vms = 0
+            soma_rss = 0
+            for proc in psutil.process_iter():
+                if proc.status() == 'running':
+                    soma_vms += round(proc.memory_info().vms/1024/1024,2)
+                    soma_rss += round(proc.memory_info().rss/1024/1024,2)
+            return soma_vms, soma_rss
+                
+        if tipo == "grafico":
+            lista_pid = []
+            lista_vms = []
+            for proc in psutil.process_iter():
+                lista_pid.append(proc.pid)
+                lista_vms.append(proc.memory_info().vms)
+            return lista_pid, lista_vms
             
 
     
@@ -134,11 +137,9 @@ def desenha_grafico():
     import matplotlib.pyplot as plt
     matplotlib.use("Agg")
     import matplotlib.backends.backend_agg as agg
-    lista_pid = []
-    lista_vms = []
-    pega_processos("grafico")
-    names = lista_pid
-    values = lista_vms
+    lista_p, lista_v = pega_processos("grafico")
+    names = lista_p
+    values = lista_v
 
     fig, axs = plt.subplots()
     axs.plot(names, values)
@@ -157,10 +158,9 @@ def desenha_grafico():
 def conteudo_aba1():
     soma_percent = 0
     soma_indices = 0
-    soma_vms = 0
-    soma_rss = 0
+
     try:
-        pega_processos("somas")
+        soma_v, soma_r = pega_processos("somas")
         #print(soma_vms)
         lista_processos_ordenados = []
         for elemento in sorted(psutil.process_iter(), key=lambda x : x.memory_info().rss, reverse = True):
@@ -176,15 +176,15 @@ def conteudo_aba1():
                 montar_tabela(f'{nome}',70,220+soma_indices*20)
                 montar_tabela(f'{round(vms,2)} MB',250,220+soma_indices*20)
                 montar_tabela(f'{round(rss,2)} MB',350,220+soma_indices*20)
-                montar_tabela(f'{round(vms/round(soma_vms,2),4)} %',450,220+soma_indices*20)
-                montar_tabela(f'{round(rss/round(soma_rss,2),4)} %',550,220+soma_indices*20)
+                montar_tabela(f'{round(vms/round(soma_v,2),4)} %',450,220+soma_indices*20)
+                montar_tabela(f'{round(rss/round(soma_r,2),4)} %',550,220+soma_indices*20)
                 soma_indices = soma_indices + 1
     except psutil.NoSuchProcess:
         pass
         
     montar_tabela(f'Total de uso do sistema: {soma_percent/100}  %',10,150)
-    montar_tabela(f'Total de uso do vms: {round(soma_vms,2)}  MB',10,130)
-    montar_tabela(f'Total de uso do rss: {round(soma_rss,2)}  MB',10,110)
+    montar_tabela(f'Total de uso do vms: {round(soma_v,2)}  MB',10,130)
+    montar_tabela(f'Total de uso do rss: {round(soma_r,2)}  MB',10,110)
     
 
  
