@@ -131,7 +131,22 @@ def pega_processos(tipo):
             return lista_pid, lista_vms
             
 
-    
+def obtem_nome_familia(familia):
+    if familia == socket.AF_INET:
+         return("IPv4")
+    elif familia == socket.AF_INET6:
+        return("IPv6")
+    else:
+        return("-")
+def obtem_tipo_socket(tipo):
+    if tipo == socket.SOCK_STREAM:
+        return("TCP")
+    elif tipo == socket.SOCK_DGRAM:
+        return("UDP")
+    elif tipo == socket.SOCK_RAW:
+        return("IP")
+    else:
+        return("-")    
 def desenha_grafico():
     import matplotlib
     import matplotlib.pyplot as plt
@@ -235,16 +250,11 @@ def conteudo_aba0():
     
 
 def conteudo_aba2():
+    teste = 0
     soma_indices = 0
+    espacamento = 0
     interfaces = psutil.net_if_addrs()
-    #print(interfaces)
-    #print(interfaces)
-   #nomes = []
-    """for nome_da_rede in interfaces:
-        nomes.append(str(nome_da_rede))
-    print(nomes)"""
     identifica_ip_router = netifaces.gateways()
-    #print(identifica_ip_router)
     for i, j in identifica_ip_router.items():
         try:
             gat = j[2][0]
@@ -261,9 +271,33 @@ def conteudo_aba2():
         montar_tabela(f'{info_rede[1][1]}',200,220+soma_indices*20)
         #mascara
         montar_tabela(f'{info_rede[1][2]}',350,220+soma_indices*20)
-        #for j in interfaces[i]:
-            #montar_tabela("\t"+str(j),5,300+soma_indices*20)
         soma_indices = soma_indices + 1
+    dados_de_rede = psutil.net_io_counters()
+    pids = psutil.pids()
+    montar_tabela(f'PID          End.         Tipo        Status                Endereço Local          Porta L.         Endereço Remoto        Porta R.',5,400)
+    for p in pids:
+        try:
+            processo = psutil.Process(p)
+            conn = processo.connections()
+            if conn:
+                montar_tabela(f'{p}',5,415+espacamento*15)
+                montar_tabela(f'{obtem_nome_familia(conn[0][1])}',68,415+espacamento*15)
+                montar_tabela(f'{obtem_tipo_socket(conn[0][2])}',135,415+espacamento*15)
+                montar_tabela(f'{conn[0][5]}',190,415+espacamento*15)
+                montar_tabela(f'{conn[0][3][0]}',295,415+espacamento*15)
+                montar_tabela(f'{conn[0][3][1]}',435,415+espacamento*15)
+                if len(conn[0][4]) != 0 : 
+                    montar_tabela(f'{conn[0][4][0]}',520,415+teste*15)
+                    montar_tabela(f'{conn[0][4][1]}',675,415+teste*15)
+                    teste +=1
+
+                espacamento += 1 
+        except psutil.NoSuchProcess:
+            pass
+    #montar_tabela(f'Quantidade de Megabytes recebida : {dados_de_rede[0]/1024/1024} MB',5,400)
+    #montar_tabela(f'Quantidade de Megabytes enviada : {dados_de_rede[1]/1024/1024} MB',5,420)
+    #montar_tabela(f'Quantidade de pacotes enviada : {dados_de_rede[2]}',5,440)                
+    #montar_tabela(f'Quantidade de pacotes recebida : {dados_de_rede[3]}',5,460)
             
 def conteudo_aba3():
     desenha_grafico()
