@@ -1,4 +1,4 @@
-import pygame,sys,os, time,psutil, netifaces
+import pygame,sys,os, time,psutil, netifaces, socket
 from datetime import datetime , timedelta
 from pytz import timezone 
 branco  = (255,255,255)
@@ -16,7 +16,7 @@ pygame.mixer.init()
 pygame.font.init()
 
 largura_tela = 800
-altura_tela = 900
+altura_tela = 1024
 
 tela = pygame.display.set_mode((largura_tela,altura_tela))
 lista = os.listdir("./")
@@ -122,13 +122,67 @@ def pega_processos(tipo):
                     soma_rss += round(proc.memory_info().rss/1024/1024,2)
             return soma_vms, soma_rss
                 
-        if tipo == "grafico":
+        if tipo == "grafico_vms":
             lista_pid = []
             lista_vms = []
             for proc in psutil.process_iter():
                 lista_pid.append(proc.pid)
                 lista_vms.append(proc.memory_info().vms)
             return lista_pid, lista_vms
+        
+        if tipo == "grafico_rss":
+            lista_pid = []
+            lista_rss = []
+            for proc in psutil.process_iter():
+                lista_pid.append(proc.pid)
+                lista_rss.append(proc.memory_info().rss)
+            return lista_pid, lista_rss
+        
+def desenha_grafico_vms():
+    import matplotlib
+    import matplotlib.pyplot as plt
+    matplotlib.use("Agg")
+    import matplotlib.backends.backend_agg as agg
+    import pandas as pd
+    import numpy as np
+    lista_p, lista_v = pega_processos("grafico_vms")
+    names = lista_p
+    values = lista_v
+    
+    fig, axs = plt.subplots()
+    axs.plot(names, values)
+    fig.suptitle('Uso de memoria VMS')
+
+    canvas = agg.FigureCanvasAgg(fig)
+    canvas.draw()
+    size = canvas.get_width_height()
+    renderer = canvas.get_renderer()
+    raw_data = renderer.tostring_rgb()
+
+    surf = pygame.image.fromstring(raw_data, size, "RGB")
+    tela.blit(surf, (100,70))
+    
+def desenha_grafico_rss():
+    import matplotlib
+    import matplotlib.pyplot as plt
+    matplotlib.use("Agg")
+    import matplotlib.backends.backend_agg as agg
+    lista_p, lista_v = pega_processos("grafico_rss")
+    names = lista_p
+    values = lista_v
+
+    fig, axs = plt.subplots()
+    axs.plot(names, values)
+    fig.suptitle('Uso de memoria RSS')
+
+    canvas = agg.FigureCanvasAgg(fig)
+    canvas.draw()
+    size = canvas.get_width_height()
+    renderer = canvas.get_renderer()
+    raw_data = renderer.tostring_rgb()
+
+    surf = pygame.image.fromstring(raw_data, size, "RGB")
+    tela.blit(surf, (100,550))
             
 
 def obtem_nome_familia(familia):
@@ -147,27 +201,6 @@ def obtem_tipo_socket(tipo):
         return("IP")
     else:
         return("-")    
-def desenha_grafico():
-    import matplotlib
-    import matplotlib.pyplot as plt
-    matplotlib.use("Agg")
-    import matplotlib.backends.backend_agg as agg
-    lista_p, lista_v = pega_processos("grafico")
-    names = lista_p
-    values = lista_v
-
-    fig, axs = plt.subplots()
-    axs.plot(names, values)
-    fig.suptitle('Categorical Plotting')
-
-    canvas = agg.FigureCanvasAgg(fig)
-    canvas.draw()
-    size = canvas.get_width_height()
-    renderer = canvas.get_renderer()
-    raw_data = renderer.tostring_rgb()
-
-    surf = pygame.image.fromstring(raw_data, size, "RGB")
-    tela.blit(surf, (100,150))
     
 
 def conteudo_aba1():
@@ -176,7 +209,6 @@ def conteudo_aba1():
 
     try:
         soma_v, soma_r = pega_processos("somas")
-        #print(soma_vms)
         lista_processos_ordenados = []
         for elemento in sorted(psutil.process_iter(), key=lambda x : x.memory_info().rss, reverse = True):
             lista_processos_ordenados.append(elemento)
@@ -210,17 +242,6 @@ def conteudo_aba1():
     montar_tabela("rss",350,190)
     montar_tabela("% do vms",450,190)
     montar_tabela("% do rss",550,190)
-    """for item in lista_de_dicionario:
-        montar_tabela(f'{item["pid"]}',10,155+soma_indices*20)
-        montar_tabela(f'{item["nome"]}',50,155+soma_indices*20)
-        montar_tabela(f'{round(item["vms"]/1024/1024,2)} MB',200,155+soma_indices*20)
-        montar_tabela(f'{round(item["rss"]/1024/1024,2)} MB',300,155+soma_indices*20)
-        montar_tabela(f'{round(item["vms"]/round(soma_vms/1024/1024,2)/100,2)} %',400,155+soma_indices*20)
-        montar_tabela(f'{round(item["rss"]/round(soma_rss/1024/1024,2)/100,2)} %',500,155+soma_indices*20)
-        soma_indices = soma_indices + 1
-    montar_tabela(f'Total de uso do sistema: {round(soma_percent/100,2)}  %',200,(200)+50)
-    montar_tabela(f'Total de uso do vms: {round(soma_vms/1024/1024,2)}  MB',200,(200)+30)
-    montar_tabela(f'Total de uso do rss: {round(soma_rss/1024/1024,2)}  MB',200,(200)+10)"""
     
 def conteudo_aba0():
     posx = 10
@@ -294,13 +315,10 @@ def conteudo_aba2():
                 espacamento += 1 
         except psutil.NoSuchProcess:
             pass
-    #montar_tabela(f'Quantidade de Megabytes recebida : {dados_de_rede[0]/1024/1024} MB',5,400)
-    #montar_tabela(f'Quantidade de Megabytes enviada : {dados_de_rede[1]/1024/1024} MB',5,420)
-    #montar_tabela(f'Quantidade de pacotes enviada : {dados_de_rede[2]}',5,440)                
-    #montar_tabela(f'Quantidade de pacotes recebida : {dados_de_rede[3]}',5,460)
             
 def conteudo_aba3():
-    desenha_grafico()
+    desenha_grafico_vms()
+    desenha_grafico_rss()
 
 
 clock = pygame.time.Clock()
