@@ -1,22 +1,11 @@
 import pygame,sys,os, time,psutil, netifaces, socket
 from datetime import datetime , timedelta
 from pytz import timezone 
-branco  = (255,255,255)
-preto = (0,0,0)
-verde = (0,255,0)
-azul = (0,0,156)
-red = (255,0,0)
-darkBlue = (2 , 24 , 89)
-cores = [azul,red,darkBlue,preto]
-
-
+from constantes import *
 
 pygame.mixer.init()
 
 pygame.font.init()
-
-largura_tela = 800
-altura_tela = 1024
 
 tela = pygame.display.set_mode((largura_tela,altura_tela))
 lista = os.listdir("./")
@@ -25,25 +14,22 @@ dic = {}
 dic2 = {}
 formato = "%d/%m/%Y %H:%M:%S"
 
-
-for arquivos in lista:
-    if os.path.isfile(arquivos):
-        dic[arquivos] = []
-        timestamp_criacao = os.stat(arquivos).st_atime
-        timestamp_modificacao = os.stat(arquivos).st_mtime
+for i in lista:
+    if os.path.isfile(i):
+        dic[i] = []
+        timestamp_criacao = os.stat(i).st_atime
+        timestamp_modificacao = os.stat(i).st_mtime
         data_criacao = time.strftime(formato, time.localtime(timestamp_criacao))
         data_mod = time.strftime(formato, time.localtime(timestamp_modificacao))
-        dic[arquivos].append(os.stat(arquivos).st_size)
-        dic[arquivos].append(data_criacao)
-        dic[arquivos].append(data_mod)
+        dic[i].append(os.stat(i).st_size)
+        dic[i].append(data_criacao)
+        dic[i].append(data_mod)
+print(dic)
 
-titulo = '{:11}'.format("Tamanho") # 10 caracteres + 1 de espaço
-# Concatenar com 25 caracteres + 2 de espaços
+titulo = '{:11}'.format("Tamanho") 
 titulo = titulo + '{:27}'.format("Data de Modificação")
-# Concatenar com 25 caracteres + 2 de espaços
 titulo = titulo + '{:27}'.format("Data de Criação")
 titulo = titulo + "Nome"
-#print(titulo)
 
 terminou = False
 
@@ -252,7 +238,6 @@ def conteudo_aba0():
     montar_tabela(f'Tamanho total dos arquivos: {round((soma_tamanho/1024),2)} KB',posx,(220+soma_indices*20))
     montar_tabela(f'Média de tamanho  dos arquivos: {round((soma_tamanho/len(tamanho)/1024),2)} KB',posx,(240+soma_indices*20))
     
-
 def conteudo_aba2():
     teste = 0
     soma_indices = 0
@@ -302,7 +287,6 @@ def conteudo_aba2():
 def conteudo_aba3():
     desenha_grafico("grafico_vms")
     desenha_grafico("grafico_rss")
-
 
 clock = pygame.time.Clock()
 
