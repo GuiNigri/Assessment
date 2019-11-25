@@ -138,53 +138,37 @@ def pega_processos(tipo):
                 lista_rss.append(proc.memory_info().rss)
             return lista_pid, lista_rss
         
-def desenha_grafico_vms():
+def desenha_grafico(tipo):
     import matplotlib
     import matplotlib.pyplot as plt
     matplotlib.use("Agg")
     import matplotlib.backends.backend_agg as agg
-    import pandas as pd
-    import numpy as np
-    lista_p, lista_v = pega_processos("grafico_vms")
+    lista_p, lista_v = pega_processos(tipo)
     names = lista_p
     values = lista_v
     
     fig, axs = plt.subplots()
     axs.plot(names, values)
-    fig.suptitle('Uso de memoria VMS')
-
-    canvas = agg.FigureCanvasAgg(fig)
-    canvas.draw()
-    size = canvas.get_width_height()
-    renderer = canvas.get_renderer()
-    raw_data = renderer.tostring_rgb()
-
-    surf = pygame.image.fromstring(raw_data, size, "RGB")
-    tela.blit(surf, (100,70))
     
-def desenha_grafico_rss():
-    import matplotlib
-    import matplotlib.pyplot as plt
-    matplotlib.use("Agg")
-    import matplotlib.backends.backend_agg as agg
-    lista_p, lista_v = pega_processos("grafico_rss")
-    names = lista_p
-    values = lista_v
-
-    fig, axs = plt.subplots()
-    axs.plot(names, values)
-    fig.suptitle('Uso de memoria RSS')
-
-    canvas = agg.FigureCanvasAgg(fig)
-    canvas.draw()
-    size = canvas.get_width_height()
-    renderer = canvas.get_renderer()
-    raw_data = renderer.tostring_rgb()
-
-    surf = pygame.image.fromstring(raw_data, size, "RGB")
-    tela.blit(surf, (100,550))
-            
-
+    if(tipo=="grafico_vms"):
+        fig.suptitle('Uso de memoria VMS')
+        canvas = agg.FigureCanvasAgg(fig)
+        canvas.draw()
+        size = canvas.get_width_height()
+        renderer = canvas.get_renderer()
+        raw_data = renderer.tostring_rgb()
+        surf = pygame.image.fromstring(raw_data, size, "RGB")
+        tela.blit(surf, (100,70))
+    else:
+        fig.suptitle('Uso de memoria RSS')
+        canvas = agg.FigureCanvasAgg(fig)
+        canvas.draw()
+        size = canvas.get_width_height()
+        renderer = canvas.get_renderer()
+        raw_data = renderer.tostring_rgb()
+        surf = pygame.image.fromstring(raw_data, size, "RGB")
+        tela.blit(surf, (100,550))
+    
 def obtem_nome_familia(familia):
     if familia == socket.AF_INET:
          return("IPv4")
@@ -317,8 +301,8 @@ def conteudo_aba2():
             pass
             
 def conteudo_aba3():
-    desenha_grafico_vms()
-    desenha_grafico_rss()
+    desenha_grafico("grafico_vms")
+    desenha_grafico("grafico_rss")
 
 
 clock = pygame.time.Clock()
@@ -386,3 +370,4 @@ while True:
     clock.tick(50)
     
 pygame.display.quit()
+
