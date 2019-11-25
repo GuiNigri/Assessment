@@ -101,11 +101,13 @@ def pega_processos(tipo):
         if tipo == "somas":
             soma_vms = 0
             soma_rss = 0
+            mem = psutil.virtual_memory()
+            percent_mem = mem[2]
             for proc in psutil.process_iter():
                 if proc.status() == 'running':
                     soma_vms += round(proc.memory_info().vms/1024/1024,2)
                     soma_rss += round(proc.memory_info().rss/1024/1024,2)
-            return soma_vms, soma_rss
+            return soma_vms, soma_rss, percent_mem
                 
         if tipo == "grafico_vms":
             lista_pid = []
@@ -173,11 +175,9 @@ def obtem_tipo_socket(tipo):
     
 
 def conteudo_aba1():
-    soma_percent = 0
     soma_indices = 0
-
     try:
-        soma_v, soma_r = pega_processos("somas")
+        soma_v, soma_r, percent = pega_processos("somas")
         lista_processos_ordenados = []
         for elemento in sorted(psutil.process_iter(), key=lambda x : x.memory_info().rss, reverse = True):
             lista_processos_ordenados.append(elemento)
@@ -198,7 +198,7 @@ def conteudo_aba1():
     except psutil.NoSuchProcess:
         pass
         
-    montar_tabela(f'Total de uso do sistema: {soma_percent/100}  %',10,150)
+    montar_tabela(f'Total de uso do sistema: {percent}  %',10,150)
     montar_tabela(f'Total de uso do vms: {round(soma_v,2)}  MB',10,130)
     montar_tabela(f'Total de uso do rss: {round(soma_r,2)}  MB',10,110)
     
