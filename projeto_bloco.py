@@ -26,17 +26,16 @@ dic2 = {}
 formato = "%d/%m/%Y %H:%M:%S"
 
 
-for i in lista:
-    if os.path.isfile(i):
-        dic[i] = []
-        timestamp_criacao = os.stat(i).st_atime
-        timestamp_modificacao = os.stat(i).st_mtime
+for arquivos in lista:
+    if os.path.isfile(arquivos):
+        dic[arquivos] = []
+        timestamp_criacao = os.stat(arquivos).st_atime
+        timestamp_modificacao = os.stat(arquivos).st_mtime
         data_criacao = time.strftime(formato, time.localtime(timestamp_criacao))
         data_mod = time.strftime(formato, time.localtime(timestamp_modificacao))
-        dic[i].append(os.stat(i).st_size)
-        dic[i].append(data_criacao)
-        dic[i].append(data_mod)
-print(dic)
+        dic[arquivos].append(os.stat(arquivos).st_size)
+        dic[arquivos].append(data_criacao)
+        dic[arquivos].append(data_mod)
 
 titulo = '{:11}'.format("Tamanho") # 10 caracteres + 1 de espaço
 # Concatenar com 25 caracteres + 2 de espaços
@@ -370,4 +369,3 @@ while True:
     clock.tick(50)
     
 pygame.display.quit()
-
