@@ -8,28 +8,6 @@ pygame.mixer.init()
 pygame.font.init()
 
 tela = pygame.display.set_mode((largura_tela,altura_tela))
-lista = os.listdir("./")
-
-dic = {}
-dic2 = {}
-formato = "%d/%m/%Y %H:%M:%S"
-
-for i in lista:
-    if os.path.isfile(i):
-        dic[i] = []
-        timestamp_criacao = os.stat(i).st_atime
-        timestamp_modificacao = os.stat(i).st_mtime
-        data_criacao = time.strftime(formato, time.localtime(timestamp_criacao))
-        data_mod = time.strftime(formato, time.localtime(timestamp_modificacao))
-        dic[i].append(os.stat(i).st_size)
-        dic[i].append(data_criacao)
-        dic[i].append(data_mod)
-print(dic)
-
-titulo = '{:11}'.format("Tamanho") 
-titulo = titulo + '{:27}'.format("Data de Modificação")
-titulo = titulo + '{:27}'.format("Data de Criação")
-titulo = titulo + "Nome"
 
 terminou = False
 
@@ -78,11 +56,12 @@ def mostra_titulo_aba(texto,x):
     
 def cria_abas():
     lista_de_abas = []
+    nome_abas = ["ARQUIVOS", "PROCESSOS", "REDE", "GRAFICOS"]
     for a in range(0,4):
         aba = Aba(a,cores)
         aba.desenha(tela)
         lista_de_abas.append(aba)
-        mostra_titulo_aba(f"ABA {a}", (largura_tela/4 *a)+100)
+        mostra_titulo_aba(f"{nome_abas[a]}", (largura_tela/4 *a)+100)
     return lista_de_abas
 
 def mostra_clock():
@@ -97,33 +76,30 @@ def mostra_segundos():
     textpos = text.get_rect(center =(600,120))
     tela.blit(text, textpos)
     
-def pega_processos(tipo):
-        if tipo == "somas":
-            soma_vms = 0
-            soma_rss = 0
-            mem = psutil.virtual_memory()
-            percent_mem = mem[2]
-            for proc in psutil.process_iter():
-                if proc.status() == 'running':
-                    soma_vms += round(proc.memory_info().vms/1024/1024,2)
-                    soma_rss += round(proc.memory_info().rss/1024/1024,2)
-            return soma_vms, soma_rss, percent_mem
+def pega_processos(tipo):  
+        lista_pid = []
+        lista_vms = []
+        lista_rss = []
+        soma_vms = 0
+        soma_rss = 0
+        for proc in psutil.process_iter():
+            lista_pid.append(proc.pid)
+            lista_vms.append(proc.memory_info().vms)
+            lista_rss.append(proc.memory_info().rss)
+            if proc.status() == 'running':
+                soma_vms += round(proc.memory_info().vms/1024/1024,2)
+                soma_rss += round(proc.memory_info().rss/1024/1024,2)
                 
-        if tipo == "grafico_vms":
-            lista_pid = []
-            lista_vms = []
-            for proc in psutil.process_iter():
-                lista_pid.append(proc.pid)
-                lista_vms.append(proc.memory_info().vms)
+        if tipo == "grafico_vms": 
             return lista_pid, lista_vms
         
         if tipo == "grafico_rss":
-            lista_pid = []
-            lista_rss = []
-            for proc in psutil.process_iter():
-                lista_pid.append(proc.pid)
-                lista_rss.append(proc.memory_info().rss)
             return lista_pid, lista_rss
+        
+        if tipo == "somas":
+            mem = psutil.virtual_memory()
+            percent_mem = mem[2] 
+            return soma_vms, soma_rss, percent_mem
         
 def desenha_grafico(tipo):
     import matplotlib
@@ -136,25 +112,24 @@ def desenha_grafico(tipo):
     
     fig, axs = plt.subplots()
     axs.plot(names, values)
+    posicao_grafico = 0
     
     if(tipo=="grafico_vms"):
         fig.suptitle('Uso de memoria VMS')
-        canvas = agg.FigureCanvasAgg(fig)
-        canvas.draw()
-        size = canvas.get_width_height()
-        renderer = canvas.get_renderer()
-        raw_data = renderer.tostring_rgb()
-        surf = pygame.image.fromstring(raw_data, size, "RGB")
-        tela.blit(surf, (100,70))
+        posicao_grafico = 70
     else:
         fig.suptitle('Uso de memoria RSS')
-        canvas = agg.FigureCanvasAgg(fig)
-        canvas.draw()
-        size = canvas.get_width_height()
-        renderer = canvas.get_renderer()
-        raw_data = renderer.tostring_rgb()
-        surf = pygame.image.fromstring(raw_data, size, "RGB")
-        tela.blit(surf, (100,550))
+        posicao_grafico = 550
+        
+    canvas = agg.FigureCanvasAgg(fig)
+    canvas.draw()
+    size = canvas.get_width_height()
+    renderer = canvas.get_renderer()
+    raw_data = renderer.tostring_rgb()
+    surf = pygame.image.fromstring(raw_data, size, "RGB")
+    tela.blit(surf, (100,posicao_grafico))
+    
+
     
 def obtem_nome_familia(familia):
     if familia == socket.AF_INET:
@@ -221,18 +196,24 @@ def conteudo_aba0():
     montar_tabela("Modificação",posx+290,190)
     montar_tabela("Nome do arquivo",posx+470,190)
     
-    lista = os.listdir()
+    lista = os.listdir("./")
+    formato = "%d/%m/%Y %H:%M:%S"
     
     soma_tamanho = 0
-    for i in dic:
-        soma_tamanho = soma_tamanho + dic[i][0]
     for i in lista: # Varia na lista dos arquivos e diretórios
+        soma_tamanho = soma_tamanho + os.stat(i).st_size
         if os.path.isfile(i): # checa se é um arquivo
-            kb = (dic[i][0]/1024)
+            kb = (os.stat(i).st_size/1024)
+            
+            timestamp_criacao = os.stat(i).st_atime
+            timestamp_modificacao = os.stat(i).st_mtime
+            data_criacao = time.strftime(formato, time.localtime(timestamp_criacao))
+            data_mod = time.strftime(formato, time.localtime(timestamp_modificacao))
+            
             tamanho = '{:10}'.format(str('{:.2f}'.format(kb)+' KB'))
             montar_tabela(f'{tamanho}', posx, 220+soma_indices*20) # Tamanho
-            montar_tabela(f'{dic[i][1]}', posx+90, 220+soma_indices*20) # Tempo de criação
-            montar_tabela(f'{dic[i][2]}', posx+290, 220+soma_indices*20) # Tempo de modificação
+            montar_tabela(f'{data_criacao}', posx+90, 220+soma_indices*20) # Tempo de criação
+            montar_tabela(f'{data_mod}', posx+290, 220+soma_indices*20) # Tempo de modificação
             montar_tabela(f'{i}',posx+470,220+soma_indices*20)
             soma_indices = soma_indices + 1
     montar_tabela(f'Tamanho total dos arquivos: {round((soma_tamanho/1024),2)} KB',posx,(220+soma_indices*20))
